@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="598 198 334 336" fill="none">
+  <!-- Monograma Hollanda redesenhado em vetor a partir do logo oficial -->
+  <defs>
+    <clipPath id="hm-l"><path d="M598 198H743V380L685 470V534H598Z" /></clipPath>
+    <clipPath id="hm-r"><path d="M852 198H932V534H790V400L852 330Z" /></clipPath>
+  </defs>
+  <g class="hm-ring" stroke="#EA8A10" stroke-width="21">
+    <circle cx="765" cy="366" r="150" clip-path="url(#hm-l)" />
+    <circle cx="765" cy="366" r="150" clip-path="url(#hm-r)" />
+  </g>
+  <g class="hm-h" fill="#FFFFFF">
+    <path d="M712 290L743 268V527L712 519Z" />
+    <path d="M790 205L822 215V440L790 460Z" />
+    <path d="M750 358L781 341V377L750 395Z" />
+  </g>
+</svg>

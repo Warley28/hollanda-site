@@ -1,0 +1,325 @@
+/* ---------- CAPA "opção B": A Gota ----------
+   Gota d'água em 3D desenhada ao vivo num <canvas> (assets/js/hero-b.js). Fundo azul profundo;
+   os textos ficam à esquerda (no celular, embaixo da gota). Partes animadas pelo Motion
+   ([data-hb-part], .hw > span) não recebem transform no CSS: o Motion escreve o transform delas. */
+.hb {
+  position: relative;
+  height: 100vh;
+  height: 100svh;
+  min-height: 600px;
+  overflow: hidden;
+  background: #020b1c;
+  color: #fff;
+}
+.hb__gl,
+.hb__fallback,
+.hb__fallback img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.hb__fallback {
+  display: none;
+}
+.hb__fallback img {
+  object-fit: cover;
+}
+.hb--nogl .hb__fallback,
+html:not(.js) .hb__fallback {
+  display: block;
+}
+
+/* capa */
+.hb__cover {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: var(--nav-h);
+  padding-bottom: 110px;
+  pointer-events: none;
+}
+.hb__cover > * {
+  max-width: min(47vw, 660px);
+  pointer-events: auto;
+}
+.hb__cover .eyebrow {
+  margin-bottom: 26px;
+}
+.hb__title {
+  font-size: clamp(2.6rem, 5.4vw, 6.2rem);
+  line-height: 0.98;
+  color: #fff;
+}
+.hb__line {
+  display: block;
+}
+.hb__title em {
+  display: inline-block;
+  padding: 0 0.1em 0.1em 0.02em;
+  font-size: 1.1em;
+  line-height: 1.05;
+}
+.hb__lead {
+  max-width: 520px;
+  margin-top: 26px;
+  font-size: clamp(1rem, 1.2vw, 1.12rem);
+  color: rgba(255, 255, 255, 0.72);
+}
+.hb__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+.hb__bar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: clamp(20px, 4vw, 56px);
+  padding-top: 22px;
+  padding-bottom: 28px;
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.6);
+}
+.hb__bar::before {
+  content: "";
+  position: absolute;
+  left: var(--gutter);
+  right: var(--gutter);
+  top: 0;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.hb__bar strong {
+  color: #fff;
+  font-weight: 700;
+}
+.hb .scroll-cue {
+  color: #fff;
+}
+.hb .scroll-cue__line {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* frases: uma por parada, entram pelo Motion */
+.hb__beats {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+}
+.hb__beat,
+.hb__end-head,
+.hb__club-label {
+  text-shadow: 0 2px 24px rgba(2, 11, 28, 0.55), 0 1px 3px rgba(2, 11, 28, 0.35);
+}
+.hb__beat {
+  position: absolute;
+  left: var(--gutter);
+  top: 50%;
+  transform: translateY(-50%);
+  max-width: min(46vw, 640px);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.4rem, 4.9vw, 5.6rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  opacity: 0;
+  visibility: hidden;
+}
+.hb__beat > * {
+  display: block;
+  text-wrap: balance;
+}
+.hb__beat em {
+  margin-top: 0.06em;
+  font-size: 1.04em;
+  line-height: 1.12;
+  letter-spacing: 0;
+}
+.hb__idx {
+  margin-bottom: 22px;
+  font-family: var(--font-sans);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--orange);
+}
+
+/* fechamento: a gota se divide em três, cada uma com um empreendimento */
+.hb__end {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.hb__end-head {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(var(--nav-h) + 3vh);
+  text-align: center;
+}
+.hb__end-head .eyebrow {
+  justify-content: center;
+  margin-bottom: 14px;
+}
+.hb__end-title {
+  text-wrap: balance;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2rem, 3.6vw, 3.9rem);
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+}
+.hb__end-title b {
+  color: var(--orange);
+  font-weight: 800;
+}
+/* cada faixa inteira é o link (as fotos são desenhadas no canvas, nas mesmas posições) */
+.hb__club {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: calc(var(--i) * 33.333%);
+  width: 33.334%;
+  pointer-events: auto;
+}
+.hb__club-label {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 13vh;
+  padding: 0 24px;
+  text-align: center;
+}
+.hb__club-label > span {
+  display: block;
+}
+.hb__club b {
+  display: block;
+  font-family: var(--font-display);
+  font-size: clamp(1.3rem, 2vw, 2rem);
+  font-weight: 700;
+  line-height: 1.12;
+  text-wrap: balance;
+  transition: color 0.3s;
+}
+.hb__club small {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.66);
+}
+.hb__club i {
+  display: inline-block;
+  margin-top: 16px;
+  font-style: normal;
+  font-size: 0.86rem;
+  font-weight: 700;
+  color: var(--orange);
+  opacity: 0.85;
+  transition: transform 0.4s var(--ease), opacity 0.3s;
+}
+.hb__club:hover b,
+.hb__club:focus-visible b {
+  color: var(--orange);
+}
+.hb__club:hover i,
+.hb__club:focus-visible i {
+  opacity: 1;
+  transform: translateX(6px);
+}
+.hb__club:focus-visible {
+  outline-offset: -6px;
+}
+
+/* celular e tablet em pé: gota em cima, textos embaixo */
+@media (max-aspect-ratio: 1/1) {
+  .hb__cover {
+    justify-content: flex-end;
+    padding-bottom: 150px;
+  }
+  .hb__cover > * {
+    max-width: none;
+  }
+  .hb__title {
+    font-size: clamp(2.4rem, 10.4vw, 4.6rem);
+  }
+  .hb__beat {
+    top: auto;
+    bottom: 15vh;
+    right: var(--gutter);
+    max-width: none;
+    transform: none;
+    font-size: clamp(2.2rem, 10.6vw, 4.6rem);
+  }
+  /* fechamento em três faixas deitadas, nome à esquerda; a primeira é mais alta (o título fica nela).
+     As divisas batem com as do shader (y = .2 e -.4 em unidades de tela) */
+  .hb__club {
+    top: 40%;
+    bottom: auto;
+    left: 0;
+    width: 100%;
+    height: 30%;
+  }
+  .hb__club:nth-of-type(1) {
+    top: 0;
+    height: 40%;
+  }
+  .hb__club:nth-of-type(3) {
+    top: 70%;
+  }
+  .hb__club-label {
+    left: var(--gutter);
+    right: auto;
+    bottom: 18px;
+    max-width: 70%;
+    padding: 0;
+    text-align: left;
+  }
+  .hb__club:nth-of-type(3) .hb__club-label {
+    bottom: 86px; /* acima da ilha */
+  }
+  .hb__club b {
+    font-size: 1.35rem;
+  }
+  .hb__club i {
+    margin-top: 8px;
+  }
+}
+@media (max-aspect-ratio: 1/1) and (max-width: 600px) {
+  .hb__lead,
+  .hb__bar {
+    display: none;
+  }
+  .hb__cover {
+    padding-bottom: 96px;
+  }
+  .hb__actions .btn {
+    flex: 1 1 100%;
+  }
+}
+
+/* sem movimento: só a capa, com a bolha parada */
+.reduced .hb__beats,
+.reduced .hb__end,
+html:not(.js) .hb__beats,
+html:not(.js) .hb__end {
+  display: none;
+}
