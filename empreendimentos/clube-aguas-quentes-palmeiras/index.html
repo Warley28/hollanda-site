@@ -19,10 +19,15 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Yellowtail&display=swap"
       rel="stylesheet"
     />
-    <link rel="preload" as="image" href="../../assets/video/palmeiras.jpg" />
+    <link rel="preload" as="image" href="../../assets/video/palmeiras-mobile.webp" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="../../assets/video/palmeiras.webp" media="(min-width: 768px)" fetchpriority="high" />
     <link rel="stylesheet" href="../../assets/css/main.css" />
     <script>
       document.documentElement.classList.add("js");
+      // chegou por uma transição de onda (vinda de outra página do site): a água cobre a tela até o JS revelar
+      try {
+        if (sessionStorage.getItem("hl-wave")) document.documentElement.classList.add("wave-in");
+      } catch (e) {}
     </script>
     <script type="application/ld+json">
       {
@@ -73,17 +78,12 @@
     <main id="conteudo">
       <!-- HERO do empreendimento -->
       <section class="club-hero" data-club-hero>
-        <div class="club-hero__media">
-          <video
-            data-video
-            data-src="../../assets/video/palmeiras.mp4"
-            data-src-mobile="../../assets/video/palmeiras-mobile.mp4"
-            poster="../../assets/video/palmeiras.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+        <div class="club-hero__media" data-club-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" srcset="../../assets/video/palmeiras-mobile.webp" />
+            <img src="../../assets/video/palmeiras.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/palmeiras.mp4" data-src-mobile="../../assets/video/palmeiras-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
         <div class="club-hero__shade"></div>
         <div class="club-hero__content container">
@@ -102,6 +102,8 @@
             <a class="btn btn--light" href="#produto" data-magnetic>Conhecer o título familiar</a>
           </div>
         </div>
+        <!-- linha d'água: a capa termina numa onda que se mexe (mais agitada quando a rolagem é rápida) -->
+        <svg class="wave wave--paper" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Manifesto do clube -->
@@ -146,7 +148,7 @@
               <p>piscinas com hidromassagem.</p>
             </div>
             <div class="tile tile--media tile--tall">
-              <img src="../../assets/img/palmeiras/wakeboard-540.webp" srcset="../../assets/img/palmeiras/wakeboard-540.webp 540w, ../../assets/img/palmeiras/wakeboard-1080.webp 1080w, ../../assets/img/palmeiras/wakeboard-1620.webp 1620w" sizes="(max-width: 900px) 100vw, 25vw" width="540" height="960" alt="Praticante de wakeboard no lago do clube" loading="lazy" decoding="async" />
+              <img src="../../assets/img/palmeiras/wakeboard-540.webp" srcset="../../assets/img/palmeiras/wakeboard-540.webp 540w, ../../assets/img/palmeiras/wakeboard-1080.webp 1080w, ../../assets/img/palmeiras/wakeboard-1620.webp 1620w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 25vw" width="540" height="960" alt="Praticante de wakeboard no lago do clube" loading="lazy" decoding="async" />
               <p class="tile__kicker">Esporte e aulas</p>
               <div>
                 <h3>Wakeboard, natação e muito mais</h3>
@@ -154,7 +156,7 @@
               </div>
             </div>
             <div class="tile tile--media tile--wide">
-              <img src="../../assets/img/palmeiras/barco-pirata-540.webp" srcset="../../assets/img/palmeiras/barco-pirata-540.webp 540w, ../../assets/img/palmeiras/barco-pirata-1080.webp 1080w, ../../assets/img/palmeiras/barco-pirata-1620.webp 1620w" sizes="(max-width: 900px) 100vw, 50vw" width="540" height="960" alt="Piscina infantil com barco pirata" loading="lazy" decoding="async" />
+              <img src="../../assets/img/palmeiras/barco-pirata-540.webp" srcset="../../assets/img/palmeiras/barco-pirata-540.webp 540w, ../../assets/img/palmeiras/barco-pirata-1080.webp 1080w, ../../assets/img/palmeiras/barco-pirata-1620.webp 1620w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 50vw" width="540" height="960" alt="Piscina infantil com barco pirata" loading="lazy" decoding="async" />
               <p class="tile__kicker">Para as crianças</p>
               <div><h3>Tobogãs e playground aquático</h3><p>Barco pirata, cogumelos e escorregadores — com a água sempre quentinha.</p></div>
             </div>
@@ -166,7 +168,7 @@
               </div>
             </div>
             <div class="tile tile--media">
-              <img src="../../assets/img/palmeiras/cascata-540.webp" srcset="../../assets/img/palmeiras/cascata-540.webp 540w, ../../assets/img/palmeiras/cascata-1080.webp 1080w, ../../assets/img/palmeiras/cascata-1620.webp 1620w" sizes="(max-width: 900px) 100vw, 25vw" width="540" height="960" alt="Cascata cercada de plantas no clube" loading="lazy" decoding="async" />
+              <img src="../../assets/img/palmeiras/cascata-540.webp" srcset="../../assets/img/palmeiras/cascata-540.webp 540w, ../../assets/img/palmeiras/cascata-1080.webp 1080w, ../../assets/img/palmeiras/cascata-1620.webp 1620w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 25vw" width="540" height="960" alt="Cascata cercada de plantas no clube" loading="lazy" decoding="async" />
               <p class="tile__kicker">Natureza</p>
               <div><h3>Verde e cascatas</h3><p>Paisagismo, cascatas e pesque-pague.</p></div>
             </div>
@@ -176,10 +178,11 @@
             </a>
           </div>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Galeria horizontal (fixada no desktop, arrastável no celular) -->
-      <section class="gallery" data-hscroll aria-label="Galeria">
+      <section class="gallery" data-hscroll data-defer aria-label="Galeria">
         <div class="gallery__pin">
           <div class="container gallery__head">
             <div>
@@ -189,38 +192,44 @@
             <p data-reveal>Imagens reais do clube, captadas por drone e câmera.</p>
           </div>
           <div class="gallery__track" data-hscroll-track>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/barco-pirata-540.webp" srcset="../../assets/img/palmeiras/barco-pirata-540.webp 540w, ../../assets/img/palmeiras/barco-pirata-1080.webp 1080w, ../../assets/img/palmeiras/barco-pirata-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Piscina infantil com barco pirata vista de cima" loading="lazy" decoding="async" /><figcaption>Piscina infantil</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/toboaguas-540.webp" srcset="../../assets/img/palmeiras/toboaguas-540.webp 540w, ../../assets/img/palmeiras/toboaguas-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Toboáguas desaguando na piscina" loading="lazy" decoding="async" /><figcaption>Toboáguas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/piscina-540.webp" srcset="../../assets/img/palmeiras/piscina-540.webp 540w, ../../assets/img/palmeiras/piscina-1080.webp 1080w, ../../assets/img/palmeiras/piscina-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Piscina aquecida com coqueiros ao fundo" loading="lazy" decoding="async" /><figcaption>Piscinas aquecidas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/cascata-540.webp" srcset="../../assets/img/palmeiras/cascata-540.webp 540w, ../../assets/img/palmeiras/cascata-1080.webp 1080w, ../../assets/img/palmeiras/cascata-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Cascata entre as plantas" loading="lazy" decoding="async" /><figcaption>Cascatas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/piscina-infantil-540.webp" srcset="../../assets/img/palmeiras/piscina-infantil-540.webp 540w, ../../assets/img/palmeiras/piscina-infantil-1080.webp 1080w, ../../assets/img/palmeiras/piscina-infantil-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Área infantil com escorregadores e cogumelos" loading="lazy" decoding="async" /><figcaption>Playground aquático</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/wakeboard-540.webp" srcset="../../assets/img/palmeiras/wakeboard-540.webp 540w, ../../assets/img/palmeiras/wakeboard-1080.webp 1080w, ../../assets/img/palmeiras/wakeboard-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Wakeboard no lago" loading="lazy" decoding="async" /><figcaption>Wakeboard</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/hidromassagem-540.webp" srcset="../../assets/img/palmeiras/hidromassagem-540.webp 540w, ../../assets/img/palmeiras/hidromassagem-1080.webp 1080w, ../../assets/img/palmeiras/hidromassagem-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Queda d'água de hidromassagem" loading="lazy" decoding="async" /><figcaption>Hidromassagem</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/toboaguas-drone-540.webp" srcset="../../assets/img/palmeiras/toboaguas-drone-540.webp 540w, ../../assets/img/palmeiras/toboaguas-drone-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-drone-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Toboáguas vistos do alto" loading="lazy" decoding="async" /><figcaption>Vista do drone</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/piscina-2-540.webp" srcset="../../assets/img/palmeiras/piscina-2-540.webp 540w, ../../assets/img/palmeiras/piscina-2-1080.webp 1080w, ../../assets/img/palmeiras/piscina-2-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Piscina com deck de pedra" loading="lazy" decoding="async" /><figcaption>Áreas de descanso</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/palmeiras/infantil-540.webp" srcset="../../assets/img/palmeiras/infantil-540.webp 540w, ../../assets/img/palmeiras/infantil-1080.webp 1080w, ../../assets/img/palmeiras/infantil-1620.webp 1620w" sizes="(max-width: 900px) 82vw, 34vh" width="540" height="960" alt="Piscina infantil com torre colorida" loading="lazy" decoding="async" /><figcaption>Diversão para os pequenos</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/barco-pirata-540.webp" data-lazy-srcset="../../assets/img/palmeiras/barco-pirata-540.webp 540w, ../../assets/img/palmeiras/barco-pirata-1080.webp 1080w, ../../assets/img/palmeiras/barco-pirata-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina infantil com barco pirata vista de cima" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/barco-pirata-540.webp" srcset="../../assets/img/palmeiras/barco-pirata-540.webp 540w, ../../assets/img/palmeiras/barco-pirata-1080.webp 1080w, ../../assets/img/palmeiras/barco-pirata-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina infantil com barco pirata vista de cima" loading="lazy" decoding="async" /></noscript><figcaption>Piscina infantil</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/toboaguas-540.webp" data-lazy-srcset="../../assets/img/palmeiras/toboaguas-540.webp 540w, ../../assets/img/palmeiras/toboaguas-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Toboáguas desaguando na piscina" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/toboaguas-540.webp" srcset="../../assets/img/palmeiras/toboaguas-540.webp 540w, ../../assets/img/palmeiras/toboaguas-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Toboáguas desaguando na piscina" loading="lazy" decoding="async" /></noscript><figcaption>Toboáguas</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/piscina-540.webp" data-lazy-srcset="../../assets/img/palmeiras/piscina-540.webp 540w, ../../assets/img/palmeiras/piscina-1080.webp 1080w, ../../assets/img/palmeiras/piscina-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina aquecida com coqueiros ao fundo" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/piscina-540.webp" srcset="../../assets/img/palmeiras/piscina-540.webp 540w, ../../assets/img/palmeiras/piscina-1080.webp 1080w, ../../assets/img/palmeiras/piscina-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina aquecida com coqueiros ao fundo" loading="lazy" decoding="async" /></noscript><figcaption>Piscinas aquecidas</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/cascata-540.webp" data-lazy-srcset="../../assets/img/palmeiras/cascata-540.webp 540w, ../../assets/img/palmeiras/cascata-1080.webp 1080w, ../../assets/img/palmeiras/cascata-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Cascata entre as plantas" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/cascata-540.webp" srcset="../../assets/img/palmeiras/cascata-540.webp 540w, ../../assets/img/palmeiras/cascata-1080.webp 1080w, ../../assets/img/palmeiras/cascata-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Cascata entre as plantas" loading="lazy" decoding="async" /></noscript><figcaption>Cascatas</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/piscina-infantil-540.webp" data-lazy-srcset="../../assets/img/palmeiras/piscina-infantil-540.webp 540w, ../../assets/img/palmeiras/piscina-infantil-1080.webp 1080w, ../../assets/img/palmeiras/piscina-infantil-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Área infantil com escorregadores e cogumelos" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/piscina-infantil-540.webp" srcset="../../assets/img/palmeiras/piscina-infantil-540.webp 540w, ../../assets/img/palmeiras/piscina-infantil-1080.webp 1080w, ../../assets/img/palmeiras/piscina-infantil-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Área infantil com escorregadores e cogumelos" loading="lazy" decoding="async" /></noscript><figcaption>Playground aquático</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/wakeboard-540.webp" data-lazy-srcset="../../assets/img/palmeiras/wakeboard-540.webp 540w, ../../assets/img/palmeiras/wakeboard-1080.webp 1080w, ../../assets/img/palmeiras/wakeboard-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Wakeboard no lago" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/wakeboard-540.webp" srcset="../../assets/img/palmeiras/wakeboard-540.webp 540w, ../../assets/img/palmeiras/wakeboard-1080.webp 1080w, ../../assets/img/palmeiras/wakeboard-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Wakeboard no lago" loading="lazy" decoding="async" /></noscript><figcaption>Wakeboard</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/hidromassagem-540.webp" data-lazy-srcset="../../assets/img/palmeiras/hidromassagem-540.webp 540w, ../../assets/img/palmeiras/hidromassagem-1080.webp 1080w, ../../assets/img/palmeiras/hidromassagem-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Queda d'água de hidromassagem" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/hidromassagem-540.webp" srcset="../../assets/img/palmeiras/hidromassagem-540.webp 540w, ../../assets/img/palmeiras/hidromassagem-1080.webp 1080w, ../../assets/img/palmeiras/hidromassagem-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Queda d'água de hidromassagem" loading="lazy" decoding="async" /></noscript><figcaption>Hidromassagem</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/toboaguas-drone-540.webp" data-lazy-srcset="../../assets/img/palmeiras/toboaguas-drone-540.webp 540w, ../../assets/img/palmeiras/toboaguas-drone-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-drone-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Toboáguas vistos do alto" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/toboaguas-drone-540.webp" srcset="../../assets/img/palmeiras/toboaguas-drone-540.webp 540w, ../../assets/img/palmeiras/toboaguas-drone-1080.webp 1080w, ../../assets/img/palmeiras/toboaguas-drone-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Toboáguas vistos do alto" loading="lazy" decoding="async" /></noscript><figcaption>Vista do drone</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/piscina-2-540.webp" data-lazy-srcset="../../assets/img/palmeiras/piscina-2-540.webp 540w, ../../assets/img/palmeiras/piscina-2-1080.webp 1080w, ../../assets/img/palmeiras/piscina-2-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina com deck de pedra" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/piscina-2-540.webp" srcset="../../assets/img/palmeiras/piscina-2-540.webp 540w, ../../assets/img/palmeiras/piscina-2-1080.webp 1080w, ../../assets/img/palmeiras/piscina-2-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina com deck de pedra" loading="lazy" decoding="async" /></noscript><figcaption>Áreas de descanso</figcaption></figure>
+            <figure class="gallery__item gallery__item--tall"><img style="aspect-ratio: 540 / 960" data-lazy-src="../../assets/img/palmeiras/infantil-540.webp" data-lazy-srcset="../../assets/img/palmeiras/infantil-540.webp 540w, ../../assets/img/palmeiras/infantil-1080.webp 1080w, ../../assets/img/palmeiras/infantil-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina infantil com torre colorida" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/palmeiras/infantil-540.webp" srcset="../../assets/img/palmeiras/infantil-540.webp 540w, ../../assets/img/palmeiras/infantil-1080.webp 1080w, ../../assets/img/palmeiras/infantil-1620.webp 1620w" sizes="(max-width: 900px) 70vw, 34vh" width="540" height="960" alt="Piscina infantil com torre colorida" loading="lazy" decoding="async" /></noscript><figcaption>Diversão para os pequenos</figcaption></figure>
           </div>
+          <div class="gallery__progress container" aria-hidden="true"><span data-gallery-progress></span></div>
         </div>
       </section>
 
       <!-- Um dia no clube (cena fixada) -->
-      <section class="day" data-day aria-label="Um dia no Palmeiras">
-        <div class="day__media">
-          <video
-            data-video
-            data-src="../../assets/video/palmeiras-dia.mp4"
-            data-src-mobile="../../assets/video/palmeiras-dia-mobile.mp4"
-            poster="../../assets/video/palmeiras-dia.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+      <section class="day" data-day data-defer aria-label="Um dia no Palmeiras">
+        <div class="day__media" data-day-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" data-lazy-srcset="../../assets/video/palmeiras-dia-mobile.webp" />
+            <img data-lazy-src="../../assets/video/palmeiras-dia.webp" alt="" width="1600" height="900" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/palmeiras-dia.mp4" data-src-mobile="../../assets/video/palmeiras-dia-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
+        <!-- a luz do dia: azul de manhã, clara à tarde, dourada no fim da tarde -->
+        <div class="day__tint" data-day-tint></div>
         <div class="day__shade"></div>
         <div class="container day__content">
           <div>
             <p class="eyebrow eyebrow--orange">Um dia no Palmeiras</p>
+            <!-- o sol percorre o arco conforme a rolagem -->
+            <svg class="day__sun" viewBox="0 0 240 130" aria-hidden="true">
+              <path class="day__arc" d="M14 120 A106 106 0 0 1 226 120" />
+              <path class="day__arc day__arc--on" data-day-arc d="M14 120 A106 106 0 0 1 226 120" />
+              <line class="day__horizon" x1="0" y1="120" x2="240" y2="120" />
+              <circle class="day__sun-glow" data-day-glow r="22" cx="14" cy="120" />
+              <circle class="day__sun-dot" data-day-dot r="8" cx="14" cy="120" />
+            </svg>
             <ul class="day__clock" data-day-clock>
                 <li>Manhã</li>
                 <li>Tarde</li>
@@ -245,6 +254,7 @@
               </div>
           </div>
         </div>
+        <svg class="wave wave--foam" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Produto -->
@@ -271,6 +281,7 @@
             </li>
           </ol>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Onde fica -->
@@ -300,7 +311,8 @@
 
       <!-- Próximo empreendimento -->
       <a class="next" href="../raposa-water-park/" style="--next-accent: #ff8a3d" data-cursor="Próximo">
-        <video data-video data-hover-video data-src="../../assets/video/raposa-mobile.mp4" poster="../../assets/video/raposa.jpg" muted loop playsinline preload="none"></video>
+        <img class="next__poster" src="../../assets/video/raposa.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+        <video data-video data-hover-video data-src="../../assets/video/raposa-mobile.mp4" muted loop playsinline preload="none"></video>
         <div class="container next__content">
           <p class="eyebrow eyebrow--light">Próximo empreendimento · Minas Gerais · Araguari</p>
           <p class="next__name">Raposa <span>Water Park</span></p>
@@ -309,7 +321,7 @@
       </a>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" data-defer>
       <div class="container footer__top">
         <a class="brand brand--light" href="../../" aria-label="Hollanda Parques & Resorts">
           <img class="footer__logo" src="../../assets/img/brand/hollanda-logo-white.png" alt="Hollanda Comercializadora" width="720" height="389" loading="lazy" decoding="async" />

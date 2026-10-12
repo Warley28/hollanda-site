@@ -19,10 +19,15 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Yellowtail&display=swap"
       rel="stylesheet"
     />
-    <link rel="preload" as="image" href="../../assets/video/raposa.jpg" />
+    <link rel="preload" as="image" href="../../assets/video/raposa-mobile.webp" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="../../assets/video/raposa.webp" media="(min-width: 768px)" fetchpriority="high" />
     <link rel="stylesheet" href="../../assets/css/main.css" />
     <script>
       document.documentElement.classList.add("js");
+      // chegou por uma transição de onda (vinda de outra página do site): a água cobre a tela até o JS revelar
+      try {
+        if (sessionStorage.getItem("hl-wave")) document.documentElement.classList.add("wave-in");
+      } catch (e) {}
     </script>
     <script type="application/ld+json">
       {
@@ -73,17 +78,12 @@
     <main id="conteudo">
       <!-- HERO do empreendimento -->
       <section class="club-hero" data-club-hero>
-        <div class="club-hero__media">
-          <video
-            data-video
-            data-src="../../assets/video/raposa.mp4"
-            data-src-mobile="../../assets/video/raposa-mobile.mp4"
-            poster="../../assets/video/raposa.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+        <div class="club-hero__media" data-club-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" srcset="../../assets/video/raposa-mobile.webp" />
+            <img src="../../assets/video/raposa.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/raposa.mp4" data-src-mobile="../../assets/video/raposa-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
         <div class="club-hero__shade"></div>
         <div class="club-hero__content container">
@@ -102,6 +102,8 @@
             <a class="btn btn--light" href="#produto" data-magnetic>Conhecer o título de associação</a>
           </div>
         </div>
+        <!-- linha d'água: a capa termina numa onda que se mexe (mais agitada quando a rolagem é rápida) -->
+        <svg class="wave wave--paper" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Manifesto do clube -->
@@ -128,7 +130,7 @@
           </div>
           <div class="bento">
             <div class="tile tile--media tile--tall">
-              <img src="../../assets/img/raposa/crianca-boia-800.webp" srcset="../../assets/img/raposa/crianca-boia-800.webp 800w, ../../assets/img/raposa/crianca-boia-1600.webp 1600w, ../../assets/img/raposa/crianca-boia-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Criança sorrindo na piscina com boia" loading="lazy" decoding="async" />
+              <img src="../../assets/img/raposa/crianca-boia-800.webp" srcset="../../assets/img/raposa/crianca-boia-800.webp 800w, ../../assets/img/raposa/crianca-boia-1600.webp 1600w, ../../assets/img/raposa/crianca-boia-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Criança sorrindo na piscina com boia" loading="lazy" decoding="async" />
               <p class="tile__kicker">Para a família</p>
               <div><h3>Diversão para todas as idades</h3><p>Atrações aquáticas e espaços de convivência para o dia inteiro.</p></div>
             </div>
@@ -141,7 +143,7 @@
               <div><h3>Araguari · MG</h3><p>No Triângulo Mineiro, pertinho de Uberlândia.</p></div>
             </div>
             <div class="tile tile--media tile--tall">
-              <img src="../../assets/img/raposa/boia-toboagua-800.webp" srcset="../../assets/img/raposa/boia-toboagua-800.webp 800w, ../../assets/img/raposa/boia-toboagua-1600.webp 1600w, ../../assets/img/raposa/boia-toboagua-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Casal descendo o toboágua amarelo em uma boia" loading="lazy" decoding="async" />
+              <img src="../../assets/img/raposa/boia-toboagua-800.webp" srcset="../../assets/img/raposa/boia-toboagua-800.webp 800w, ../../assets/img/raposa/boia-toboagua-1600.webp 1600w, ../../assets/img/raposa/boia-toboagua-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Casal descendo o toboágua amarelo em uma boia" loading="lazy" decoding="async" />
               <p class="tile__kicker">Water park</p>
               <div><h3>Adrenalina na água</h3><p>Para quem gosta de emoção — e de repetir a descida.</p></div>
             </div>
@@ -154,7 +156,7 @@
               </div>
             </div>
             <div class="tile tile--media tile--wide">
-              <img src="../../assets/img/raposa/piscina-ondas-2-800.webp" srcset="../../assets/img/raposa/piscina-ondas-2-800.webp 800w, ../../assets/img/raposa/piscina-ondas-2-1600.webp 1600w, ../../assets/img/raposa/piscina-ondas-2-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Piscina de ondas com pessoas nadando" loading="lazy" decoding="async" />
+              <img src="../../assets/img/raposa/piscina-ondas-2-800.webp" srcset="../../assets/img/raposa/piscina-ondas-2-800.webp 800w, ../../assets/img/raposa/piscina-ondas-2-1600.webp 1600w, ../../assets/img/raposa/piscina-ondas-2-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Piscina de ondas com pessoas nadando" loading="lazy" decoding="async" />
               <p class="tile__kicker">Piscina de ondas</p>
               <div><h3>Praia no Triângulo</h3></div>
             </div>
@@ -164,10 +166,11 @@
             </a>
           </div>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Galeria horizontal (fixada no desktop, arrastável no celular) -->
-      <section class="gallery" data-hscroll aria-label="Galeria">
+      <section class="gallery" data-hscroll data-defer aria-label="Galeria">
         <div class="gallery__pin">
           <div class="container gallery__head">
             <div>
@@ -177,39 +180,45 @@
             <p data-reveal>Imagens ilustrativas do projeto Raposa Water Park.</p>
           </div>
           <div class="gallery__track" data-hscroll-track>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/onda-amarela-800.webp" srcset="../../assets/img/raposa/onda-amarela-800.webp 800w, ../../assets/img/raposa/onda-amarela-1600.webp 1600w, ../../assets/img/raposa/onda-amarela-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Toboágua em forma de onda amarela com famílias na areia" loading="lazy" decoding="async" /><figcaption>Toboágua de onda</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/menina-boia-800.webp" srcset="../../assets/img/raposa/menina-boia-800.webp 800w, ../../assets/img/raposa/menina-boia-1600.webp 1600w, ../../assets/img/raposa/menina-boia-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Menina com boia de sapo sorrindo" loading="lazy" decoding="async" /><figcaption>Diversão em família</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/toboagua-u-800.webp" srcset="../../assets/img/raposa/toboagua-u-800.webp 800w, ../../assets/img/raposa/toboagua-u-1600.webp 1600w, ../../assets/img/raposa/toboagua-u-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Toboágua em U com boias" loading="lazy" decoding="async" /><figcaption>Adrenalina</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/ofuro-cascata-800.webp" srcset="../../assets/img/raposa/ofuro-cascata-800.webp 800w, ../../assets/img/raposa/ofuro-cascata-1600.webp 1600w, ../../assets/img/raposa/ofuro-cascata-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Ofurô com cascata" loading="lazy" decoding="async" /><figcaption>Ofurôs</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/piscina-ondas-800.webp" srcset="../../assets/img/raposa/piscina-ondas-800.webp 800w, ../../assets/img/raposa/piscina-ondas-1600.webp 1600w, ../../assets/img/raposa/piscina-ondas-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Piscina de ondas com guarda-sóis" loading="lazy" decoding="async" /><figcaption>Piscina de ondas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/fazendinha-800.webp" srcset="../../assets/img/raposa/fazendinha-800.webp 800w, ../../assets/img/raposa/fazendinha-1600.webp 1600w, ../../assets/img/raposa/fazendinha-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Monitora e criança alimentando cabras" loading="lazy" decoding="async" /><figcaption>Fazendinha</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/rede-800.webp" srcset="../../assets/img/raposa/rede-800.webp 800w, ../../assets/img/raposa/rede-1600.webp 1600w, ../../assets/img/raposa/rede-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Pessoa lendo na rede" loading="lazy" decoding="async" /><figcaption>Redário</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/churrasco-800.webp" srcset="../../assets/img/raposa/churrasco-800.webp 800w, ../../assets/img/raposa/churrasco-1600.webp 1600w, ../../assets/img/raposa/churrasco-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Famílias em área de churrasqueiras" loading="lazy" decoding="async" /><figcaption>Churrasqueiras</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/beach-tennis-800.webp" srcset="../../assets/img/raposa/beach-tennis-800.webp 800w, ../../assets/img/raposa/beach-tennis-1600.webp 1600w, ../../assets/img/raposa/beach-tennis-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Partida de beach tennis" loading="lazy" decoding="async" /><figcaption>Quadras de areia</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/jantar-800.webp" srcset="../../assets/img/raposa/jantar-800.webp 800w, ../../assets/img/raposa/jantar-1600.webp 1600w, ../../assets/img/raposa/jantar-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Família reunida em mesa farta" loading="lazy" decoding="async" /><figcaption>Gastronomia</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/raposa/aerea-noite-800.webp" srcset="../../assets/img/raposa/aerea-noite-800.webp 800w, ../../assets/img/raposa/aerea-noite-1600.webp 1600w, ../../assets/img/raposa/aerea-noite-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Vista aérea do parque iluminado à noite" loading="lazy" decoding="async" /><figcaption>O parque à noite</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/onda-amarela-800.webp" data-lazy-srcset="../../assets/img/raposa/onda-amarela-800.webp 800w, ../../assets/img/raposa/onda-amarela-1600.webp 1600w, ../../assets/img/raposa/onda-amarela-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Toboágua em forma de onda amarela com famílias na areia" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/onda-amarela-800.webp" srcset="../../assets/img/raposa/onda-amarela-800.webp 800w, ../../assets/img/raposa/onda-amarela-1600.webp 1600w, ../../assets/img/raposa/onda-amarela-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Toboágua em forma de onda amarela com famílias na areia" loading="lazy" decoding="async" /></noscript><figcaption>Toboágua de onda</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/menina-boia-800.webp" data-lazy-srcset="../../assets/img/raposa/menina-boia-800.webp 800w, ../../assets/img/raposa/menina-boia-1600.webp 1600w, ../../assets/img/raposa/menina-boia-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Menina com boia de sapo sorrindo" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/menina-boia-800.webp" srcset="../../assets/img/raposa/menina-boia-800.webp 800w, ../../assets/img/raposa/menina-boia-1600.webp 1600w, ../../assets/img/raposa/menina-boia-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Menina com boia de sapo sorrindo" loading="lazy" decoding="async" /></noscript><figcaption>Diversão em família</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/toboagua-u-800.webp" data-lazy-srcset="../../assets/img/raposa/toboagua-u-800.webp 800w, ../../assets/img/raposa/toboagua-u-1600.webp 1600w, ../../assets/img/raposa/toboagua-u-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Toboágua em U com boias" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/toboagua-u-800.webp" srcset="../../assets/img/raposa/toboagua-u-800.webp 800w, ../../assets/img/raposa/toboagua-u-1600.webp 1600w, ../../assets/img/raposa/toboagua-u-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Toboágua em U com boias" loading="lazy" decoding="async" /></noscript><figcaption>Adrenalina</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/ofuro-cascata-800.webp" data-lazy-srcset="../../assets/img/raposa/ofuro-cascata-800.webp 800w, ../../assets/img/raposa/ofuro-cascata-1600.webp 1600w, ../../assets/img/raposa/ofuro-cascata-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Ofurô com cascata" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/ofuro-cascata-800.webp" srcset="../../assets/img/raposa/ofuro-cascata-800.webp 800w, ../../assets/img/raposa/ofuro-cascata-1600.webp 1600w, ../../assets/img/raposa/ofuro-cascata-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Ofurô com cascata" loading="lazy" decoding="async" /></noscript><figcaption>Ofurôs</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/piscina-ondas-800.webp" data-lazy-srcset="../../assets/img/raposa/piscina-ondas-800.webp 800w, ../../assets/img/raposa/piscina-ondas-1600.webp 1600w, ../../assets/img/raposa/piscina-ondas-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Piscina de ondas com guarda-sóis" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/piscina-ondas-800.webp" srcset="../../assets/img/raposa/piscina-ondas-800.webp 800w, ../../assets/img/raposa/piscina-ondas-1600.webp 1600w, ../../assets/img/raposa/piscina-ondas-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Piscina de ondas com guarda-sóis" loading="lazy" decoding="async" /></noscript><figcaption>Piscina de ondas</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/fazendinha-800.webp" data-lazy-srcset="../../assets/img/raposa/fazendinha-800.webp 800w, ../../assets/img/raposa/fazendinha-1600.webp 1600w, ../../assets/img/raposa/fazendinha-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Monitora e criança alimentando cabras" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/fazendinha-800.webp" srcset="../../assets/img/raposa/fazendinha-800.webp 800w, ../../assets/img/raposa/fazendinha-1600.webp 1600w, ../../assets/img/raposa/fazendinha-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Monitora e criança alimentando cabras" loading="lazy" decoding="async" /></noscript><figcaption>Fazendinha</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/rede-800.webp" data-lazy-srcset="../../assets/img/raposa/rede-800.webp 800w, ../../assets/img/raposa/rede-1600.webp 1600w, ../../assets/img/raposa/rede-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Pessoa lendo na rede" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/rede-800.webp" srcset="../../assets/img/raposa/rede-800.webp 800w, ../../assets/img/raposa/rede-1600.webp 1600w, ../../assets/img/raposa/rede-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Pessoa lendo na rede" loading="lazy" decoding="async" /></noscript><figcaption>Redário</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/churrasco-800.webp" data-lazy-srcset="../../assets/img/raposa/churrasco-800.webp 800w, ../../assets/img/raposa/churrasco-1600.webp 1600w, ../../assets/img/raposa/churrasco-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Famílias em área de churrasqueiras" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/churrasco-800.webp" srcset="../../assets/img/raposa/churrasco-800.webp 800w, ../../assets/img/raposa/churrasco-1600.webp 1600w, ../../assets/img/raposa/churrasco-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Famílias em área de churrasqueiras" loading="lazy" decoding="async" /></noscript><figcaption>Churrasqueiras</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/beach-tennis-800.webp" data-lazy-srcset="../../assets/img/raposa/beach-tennis-800.webp 800w, ../../assets/img/raposa/beach-tennis-1600.webp 1600w, ../../assets/img/raposa/beach-tennis-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Partida de beach tennis" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/beach-tennis-800.webp" srcset="../../assets/img/raposa/beach-tennis-800.webp 800w, ../../assets/img/raposa/beach-tennis-1600.webp 1600w, ../../assets/img/raposa/beach-tennis-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Partida de beach tennis" loading="lazy" decoding="async" /></noscript><figcaption>Quadras de areia</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/jantar-800.webp" data-lazy-srcset="../../assets/img/raposa/jantar-800.webp 800w, ../../assets/img/raposa/jantar-1600.webp 1600w, ../../assets/img/raposa/jantar-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Família reunida em mesa farta" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/jantar-800.webp" srcset="../../assets/img/raposa/jantar-800.webp 800w, ../../assets/img/raposa/jantar-1600.webp 1600w, ../../assets/img/raposa/jantar-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Família reunida em mesa farta" loading="lazy" decoding="async" /></noscript><figcaption>Gastronomia</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/raposa/aerea-noite-800.webp" data-lazy-srcset="../../assets/img/raposa/aerea-noite-800.webp 800w, ../../assets/img/raposa/aerea-noite-1600.webp 1600w, ../../assets/img/raposa/aerea-noite-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Vista aérea do parque iluminado à noite" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/raposa/aerea-noite-800.webp" srcset="../../assets/img/raposa/aerea-noite-800.webp 800w, ../../assets/img/raposa/aerea-noite-1600.webp 1600w, ../../assets/img/raposa/aerea-noite-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Vista aérea do parque iluminado à noite" loading="lazy" decoding="async" /></noscript><figcaption>O parque à noite</figcaption></figure>
           </div>
+          <div class="gallery__progress container" aria-hidden="true"><span data-gallery-progress></span></div>
         </div>
       </section>
 
       <!-- Um dia no clube (cena fixada) -->
-      <section class="day" data-day aria-label="Um dia no Raposa">
-        <div class="day__media">
-          <video
-            data-video
-            data-src="../../assets/video/raposa-dia.mp4"
-            data-src-mobile="../../assets/video/raposa-dia-mobile.mp4"
-            poster="../../assets/video/raposa-dia.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+      <section class="day" data-day data-defer aria-label="Um dia no Raposa">
+        <div class="day__media" data-day-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" data-lazy-srcset="../../assets/video/raposa-dia-mobile.webp" />
+            <img data-lazy-src="../../assets/video/raposa-dia.webp" alt="" width="1600" height="900" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/raposa-dia.mp4" data-src-mobile="../../assets/video/raposa-dia-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
+        <!-- a luz do dia: azul de manhã, clara à tarde, dourada no fim da tarde -->
+        <div class="day__tint" data-day-tint></div>
         <div class="day__shade"></div>
         <div class="container day__content">
           <div>
             <p class="eyebrow eyebrow--orange">Um dia no Raposa</p>
+            <!-- o sol percorre o arco conforme a rolagem -->
+            <svg class="day__sun" viewBox="0 0 240 130" aria-hidden="true">
+              <path class="day__arc" d="M14 120 A106 106 0 0 1 226 120" />
+              <path class="day__arc day__arc--on" data-day-arc d="M14 120 A106 106 0 0 1 226 120" />
+              <line class="day__horizon" x1="0" y1="120" x2="240" y2="120" />
+              <circle class="day__sun-glow" data-day-glow r="22" cx="14" cy="120" />
+              <circle class="day__sun-dot" data-day-dot r="8" cx="14" cy="120" />
+            </svg>
             <ul class="day__clock" data-day-clock>
                 <li>Manhã</li>
                 <li>Tarde</li>
@@ -234,6 +243,7 @@
               </div>
           </div>
         </div>
+        <svg class="wave wave--foam" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Produto -->
@@ -260,6 +270,7 @@
             </li>
           </ol>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Onde fica -->
@@ -289,7 +300,8 @@
 
       <!-- Próximo empreendimento -->
       <a class="next" href="../aguas-parque-ouro-verde/" style="--next-accent: #f2c14e" data-cursor="Próximo">
-        <video data-video data-hover-video data-src="../../assets/video/ouro-verde-mobile.mp4" poster="../../assets/video/ouro-verde.jpg" muted loop playsinline preload="none"></video>
+        <img class="next__poster" src="../../assets/video/ouro-verde.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+        <video data-video data-hover-video data-src="../../assets/video/ouro-verde-mobile.mp4" muted loop playsinline preload="none"></video>
         <div class="container next__content">
           <p class="eyebrow eyebrow--light">Próximo empreendimento · Pernambuco · Petrolina</p>
           <p class="next__name">Águas Parque <span>Ouro Verde</span></p>
@@ -298,7 +310,7 @@
       </a>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" data-defer>
       <div class="container footer__top">
         <a class="brand brand--light" href="../../" aria-label="Hollanda Parques & Resorts">
           <img class="footer__logo" src="../../assets/img/brand/hollanda-logo-white.png" alt="Hollanda Comercializadora" width="720" height="389" loading="lazy" decoding="async" />

@@ -1,0 +1,22 @@
+/* ---------- Opção C (tools/make_opcao_c.py): a B passada pelo Taste Skill ----------
+   Só ajustes de layout; o resto vem de main.css e hero-b.css. */
+
+/* sem "título grande à esquerda + parágrafo pequeno flutuando à direita": título e texto empilhados */
+.services__head,
+.insta__inner {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
+.services__head p,
+.insta__inner p {
+  max-width: 60ch;
+}
+.clubs__intro {
+  grid-template-columns: 1fr;
+  grid-template-areas: "eyebrow" "title" "note";
+  gap: 18px;
+}
+.clubs__intro > :last-child {
+  max-width: 60ch;
+}

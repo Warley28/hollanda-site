@@ -32,8 +32,19 @@
   function videoSrc(v) {
     return (isMobile() && v.dataset.srcMobile) || v.dataset.src;
   }
+  // internet lenta ou "economia de dados": ficam só as capas (os vídeos têm de 3 a 9 MB)
+  var conn = navigator.connection;
+  var slowNet = !!(conn && (conn.saveData || /(^|-)2g|3g/.test(conn.effectiveType || "")));
   function ensureSrc(v) {
     if (!v.getAttribute("src")) {
+      // o vídeo surge por cima da capa só quando já está tocando (sem tela preta no meio)
+      v.addEventListener(
+        "playing",
+        function () {
+          v.classList.add("is-playing");
+        },
+        { once: true }
+      );
       v.src = videoSrc(v);
       v.load();
     }
@@ -44,7 +55,7 @@
         var v = e.target;
         var hoverOnly = v.hasAttribute("data-hover-video") && canHover;
         if (e.isIntersecting) {
-          if (reduced) return;
+          if (reduced || slowNet) return;
           if (!hoverOnly) {
             ensureSrc(v);
             v.play().catch(function () {});
@@ -62,7 +73,7 @@
   $$("[data-hover-video]").forEach(function (v) {
     var host = v.closest("a, article") || v.parentElement;
     host.addEventListener("mouseenter", function () {
-      if (reduced) return;
+      if (reduced || slowNet) return;
       ensureSrc(v);
       v.play().catch(function () {});
     });
@@ -70,6 +81,33 @@
       v.pause();
     });
   });
+
+  // fotos que só baixam quando a seção está a ~1,5 tela de distância ([data-defer]: galerias e cenas
+  // fixadas). O carregamento "lazy" do navegador baixava essas fotos logo ao abrir a página.
+  var deferIo = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        deferIo.unobserve(e.target);
+        e.target.classList.add("is-near");
+        $$("[data-lazy-srcset]", e.target).forEach(function (m) {
+          m.setAttribute("srcset", m.getAttribute("data-lazy-srcset"));
+          m.removeAttribute("data-lazy-srcset");
+        });
+        $$("[data-lazy-src]", e.target).forEach(function (m) {
+          m.setAttribute("src", m.getAttribute("data-lazy-src"));
+          m.removeAttribute("data-lazy-src");
+          // decodifica antes de aparecer (fora da rolagem): sem o "tranco" da foto grande entrando
+          if (m.decode) m.decode().catch(function () {});
+        });
+      });
+    },
+    { rootMargin: "250% 0px" }
+  );
+  $$("[data-defer]").forEach(function (s) {
+    deferIo.observe(s);
+  });
+
 
   // mola amortecida em forma fechada (resposta ao degrau), usada como "ease" do GSAP: chega
   // rápido e passa do ponto no máximo ~1,5% com zeta 0,8 — nada de pulinhos
@@ -352,9 +390,9 @@
             { clipPath: "inset(-30% 104% -90% -10%)" },
             {
               clipPath: "inset(-30% -10% -90% -10%)",
-              duration: 1.1,
+              duration: 0.85,
               ease: "power2.inOut",
-              delay: 0.35 + k * 0.2,
+              delay: 0.2 + k * 0.15,
               clearProps: "clipPath",
               scrollTrigger: { trigger: el, start: "top 86%", once: true },
             }
@@ -1519,20 +1557,149 @@
     });
   }
 
+  /* ------------------------------------------------------------------
+     Linhas d'água entre as seções (svg[data-wave]): ondas que se mexem sozinhas
+     e ficam mais altas quando a rolagem é rápida, acalmando quando ela para
+     ------------------------------------------------------------------ */
+  var waveEls = $$("[data-wave]");
+  if (waveEls.length && !reduced) {
+    var waveOn = [];
+    var waveIo = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var i = waveOn.indexOf(e.target);
+        if (e.isIntersecting && i < 0) waveOn.push(e.target);
+        if (!e.isIntersecting && i >= 0) waveOn.splice(i, 1);
+      });
+    });
+    waveEls.forEach(function (w, i) {
+      w._seed = i * 1.7;
+      waveIo.observe(w);
+    });
+    var wavePath = function (t, e, seed, back) {
+      var base = back ? 54 : 64;
+      var amp = 8 + e * 26 + (back ? 4 : 0);
+      var n = 24;
+      var pts = [];
+      for (var k = 0; k <= n; k++) {
+        var x = (k / n) * 1440;
+        var ph = seed + (back ? 1.3 : 0);
+        pts.push([x, base + amp * (0.55 * Math.sin(x * 0.0052 + t * 0.9 + ph) + 0.3 * Math.sin(x * 0.0121 - t * 1.4 + ph * 2) + 0.15 * Math.sin(x * 0.027 + t * 2.1))]);
+      }
+      // curva suave passando pelos pontos médios
+      var d = "M0 120L0 " + pts[0][1].toFixed(1);
+      for (var j = 1; j <= n; j++) {
+        d += "Q" + pts[j - 1][0] + " " + pts[j - 1][1].toFixed(1) + " " + (pts[j - 1][0] + pts[j][0]) / 2 + " " + ((pts[j - 1][1] + pts[j][1]) / 2).toFixed(1);
+      }
+      return d + "L1440 " + pts[n][1].toFixed(1) + "L1440 120Z";
+    };
+    var energy = 0;
+    var lastWaveY = window.scrollY;
+    gsap.ticker.add(function (time, dt) {
+      if (!waveOn.length) {
+        lastWaveY = window.scrollY;
+        return;
+      }
+      var speed = Math.abs(window.scrollY - lastWaveY) / Math.max(dt, 1); // px por ms
+      lastWaveY = window.scrollY;
+      var v = Math.min(1, speed / 2.5);
+      energy += (v - energy) * (v > energy ? 0.14 : 0.025);
+      waveOn.forEach(function (w) {
+        w.children[0].setAttribute("d", wavePath(time, energy, w._seed, true));
+        w.children[1].setAttribute("d", wavePath(time, energy, w._seed, false));
+      });
+    });
+  }
+
   // Galerias horizontais dos clubes: fixa a seção e desliza as fotos (desktop).
-  // As fotos andam mais que o scroll (0,6): galerias longas não cansam.
+  // As fotos andam mais que o scroll (0,6): galerias longas não cansam. Com a rolagem rápida as
+  // fotos se inclinam (e voltam com mola), e cada foto anda um pouco dentro da moldura (profundidade).
   $$("[data-hscroll]").forEach(function (sec) {
+    var track = $("[data-hscroll-track]", sec);
+    var bar = $("[data-gallery-progress]", sec);
+    var setP = function (p) {
+      if (bar) bar.parentNode.style.setProperty("--p", Math.max(0, Math.min(1, p)).toFixed(4));
+    };
+    // celular: a galeria desliza com o dedo; a barra acompanha e, na 1ª vez, a galeria "acena"
+    track.addEventListener(
+      "scroll",
+      function () {
+        var max = track.scrollWidth - track.clientWidth;
+        if (max > 0) setP(track.scrollLeft / max);
+      },
+      { passive: true }
+    );
     if (reduced) return;
+    gsap.matchMedia().add("(max-width: 900px)", function () {
+      var st = ScrollTrigger.create({
+        trigger: track,
+        start: "top 75%",
+        once: true,
+        onEnter: function () {
+          if (track.scrollLeft > 0) return;
+          // o encaixe (scroll-snap) desligado durante o aceno, senão ele puxa a galeria de volta na hora
+          track.style.scrollSnapType = "none";
+          // se a pessoa encostar na galeria durante o aceno, ele para na hora (senão "brigava" com o dedo)
+          var stopNudge = function () {
+            gsap.killTweensOf(track, "scrollLeft");
+            track.style.scrollSnapType = "";
+          };
+          track.addEventListener("touchstart", stopNudge, { once: true, passive: true });
+          track.addEventListener("wheel", stopNudge, { once: true, passive: true });
+          gsap.to(track, {
+            scrollLeft: 70,
+            duration: 0.7,
+            ease: "power2.inOut",
+            yoyo: true,
+            repeat: 1,
+            delay: 0.3,
+            onComplete: function () {
+              track.style.scrollSnapType = "";
+            },
+          });
+        },
+      });
+      return function () {
+        st.kill();
+      };
+    });
     gsap.matchMedia().add("(min-width: 901px)", function () {
-      var track = $("[data-hscroll-track]", sec);
+      var items = $$(".gallery__item", sec);
+      var imgs = items.map(function (it) {
+        return $("img", it);
+      });
+      gsap.set(imgs, { scale: 1.12 });
+      var skewTo = gsap.quickTo(items, "skewX", { duration: 0.6, ease: "power3" });
+      var settleSkew = null;
       var dist = function () {
         return Math.max(0, track.scrollWidth - window.innerWidth);
+      };
+      // centro de cada foto dentro do trilho (medido uma vez, de novo só quando a página é recalculada)
+      var centers = [],
+        halfW = [],
+        trackLeft = 0;
+      var measure = function () {
+        var x = gsap.getProperty(track, "x") || 0;
+        trackLeft = track.getBoundingClientRect().left - x;
+        items.forEach(function (it, i) {
+          centers[i] = it.offsetLeft + it.offsetWidth / 2;
+          halfW[i] = it.offsetWidth / 2;
+        });
+      };
+      var depth = function () {
+        var vw = window.innerWidth;
+        var x = gsap.getProperty(track, "x") || 0;
+        items.forEach(function (it, i) {
+          var c = trackLeft + x + centers[i];
+          if (c + halfW[i] < -200 || c - halfW[i] > vw + 200) return;
+          gsap.set(imgs[i], { xPercent: ((c - vw / 2) / vw) * -7 });
+        });
       };
       gsap.to(track, {
         x: function () {
           return -dist();
         },
         ease: "none",
+        onUpdate: depth,
         scrollTrigger: {
           trigger: sec,
           start: "top top",
@@ -1540,10 +1707,32 @@
             return "+=" + Math.round(dist() * 0.6);
           },
           pin: true,
-          scrub: 0.8,
+          anticipatePin: 1, // sem o "tranco" no instante em que a seção fixa
+          scrub: 0.35, // responde à rolagem quase na hora (com 0,8 a galeria seguia andando depois de parar)
           invalidateOnRefresh: true,
+          onRefresh: function () {
+            measure();
+            depth();
+          },
+          onUpdate: function (self) {
+            setP(self.progress);
+            skewTo(gsap.utils.clamp(-4, 4, self.getVelocity() / -500));
+            // parou de rolar: as fotos voltam a ficar retas
+            clearTimeout(settleSkew);
+            settleSkew = setTimeout(function () {
+              skewTo(0);
+            }, 140);
+          },
+          onLeave: function () {
+            skewTo(0);
+          },
+          onLeaveBack: function () {
+            skewTo(0);
+          },
         },
       });
+      measure();
+      depth();
     });
   });
 
@@ -1586,10 +1775,29 @@
     var nameEl = $(".club-hero__name", clubHero);
     var bits = $$("[data-club-intro]", clubHero);
     if (!reduced) {
+      var clubMedia = $("[data-club-media]", clubHero);
       gsap.set(bits, { opacity: 0, y: 24 });
       gsap.set(nameEl, { autoAlpha: 0 });
+      // a foto se abre como uma bolha que cresce a partir do centro-baixo (onde fica o nome);
+      // vindo de outra página do site, quem revela é a onda da transição
+      if (!html.classList.contains("wave-in")) {
+        introTl.fromTo(
+          clubMedia,
+          { clipPath: "circle(0% at 50% 72%)" },
+          {
+            clipPath: "circle(150% at 50% 72%)",
+            duration: 1.9,
+            ease: "expo.inOut",
+            clearProps: "clipPath",
+            onComplete: function () {
+              clubMedia.classList.add("is-open");
+            },
+          },
+          0
+        );
+      }
       introTl
-        .fromTo(".club-hero__media video", { scale: 1.25 }, { scale: 1, duration: 2.6, ease: "expo.out" }, 0)
+        .fromTo($$(".club-hero__media > *", clubHero), { scale: 1.25 }, { scale: 1, duration: 2.6, ease: "expo.out" }, 0)
         .to(bits, { opacity: 1, y: 0, duration: 1.2, ease: "expo.out", stagger: 0.07 }, 0.5);
       fontsReady.then(function () {
         var nameLines = splitLines(nameEl);
@@ -1613,6 +1821,12 @@
       once: true,
       onEnter: function (batch) {
         gsap.fromTo(batch, { y: 70, opacity: 0 }, { y: 0, opacity: 1, duration: 1.2, ease: "expo.out", stagger: 0.08 });
+        // cartões com foto: a foto sobe como água enchendo a moldura e assenta (zoom sai devagar)
+        batch.forEach(function (t, i) {
+          var media = t.classList.contains("tile--media") && $("img, video", t);
+          if (!media) return;
+          gsap.fromTo(media, { clipPath: "inset(100% 0% 0% 0%)", scale: 1.25 }, { clipPath: "inset(0% 0% 0% 0%)", scale: 1, duration: 1.5, ease: "expo.out", delay: 0.1 + i * 0.08, clearProps: "clipPath,transform" });
+        });
       },
     });
   }
@@ -1622,14 +1836,35 @@
   if (day && !reduced) {
     var slides = $$("[data-day-slide]", day);
     var clock = $$("[data-day-clock] li", day);
-    var vid = $(".day__media video", day);
+    var dayMedia = $("[data-day-media]", day);
+    var tint = $("[data-day-tint]", day);
+    var arc = $("[data-day-arc]", day);
+    var dot = $("[data-day-dot]", day);
+    var glow = $("[data-day-glow]", day);
+    // a luz do dia numa camada de cor por cima do vídeo (filtrar o vídeo inteiro pesava no celular):
+    // manhã azulada, tarde clara, fim de tarde dourado
     var looks = [
-      "brightness(1.08) saturate(0.95) sepia(0) hue-rotate(-6deg)",
-      "brightness(1.12) saturate(1.2) sepia(0) hue-rotate(0deg)",
-      "brightness(0.82) saturate(1.25) sepia(0.4) hue-rotate(-14deg)",
+      { backgroundColor: "rgb(120, 180, 255)", opacity: 0.32 },
+      { backgroundColor: "rgb(255, 244, 214)", opacity: 0.18 },
+      { backgroundColor: "rgb(255, 142, 48)", opacity: 0.55 },
     ];
-    gsap.set(vid, { filter: looks[0] });
+    gsap.set(tint, looks[0]);
     gsap.set(slides[0], { opacity: 1 });
+    // o sol anda pelo arco: nasce à esquerda e se põe à direita; a cor esquenta no fim
+    var arcLen = arc ? arc.getTotalLength() : 0;
+    if (arc) gsap.set(arc, { strokeDasharray: arcLen, strokeDashoffset: arcLen });
+    var sun = function (p) {
+      if (!arc) return;
+      var pt = arc.getPointAtLength(arcLen * p);
+      dot.setAttribute("cx", pt.x.toFixed(1));
+      dot.setAttribute("cy", pt.y.toFixed(1));
+      glow.setAttribute("cx", pt.x.toFixed(1));
+      glow.setAttribute("cy", pt.y.toFixed(1));
+      arc.style.strokeDashoffset = (arcLen * (1 - p)).toFixed(1);
+      var warm = gsap.utils.clamp(0, 1, (p - 0.55) / 0.45);
+      dot.style.fill = gsap.utils.interpolate("#ffe7a3", "#ff8a2a", warm);
+    };
+    sun(0.04);
     var dayTl = gsap.timeline({
       scrollTrigger: {
         trigger: day,
@@ -1644,6 +1879,9 @@
           });
         },
       },
+      onUpdate: function () {
+        sun(0.04 + 0.92 * this.progress());
+      },
     });
     slides.forEach(function (s, i) {
       var at = i;
@@ -1651,11 +1889,91 @@
       if (i > 0) dayTl.fromTo(s, { opacity: 0, y: 60 }, { opacity: 1, y: 0, duration: 0.3, ease: "power2.out" }, at + 0.05);
       if (i < slides.length - 1) {
         dayTl.to(s, { opacity: 0, y: -60, duration: 0.3, ease: "power2.in" }, at + 0.7);
-        dayTl.to(vid, { filter: looks[Math.min(i + 1, looks.length - 1)], duration: 0.6, ease: "none" }, at + 0.55);
+        dayTl.to(tint, Object.assign({ duration: 0.6, ease: "none" }, looks[Math.min(i + 1, looks.length - 1)]), at + 0.55);
       }
     });
-    dayTl.to(vid, { scale: 1.12, duration: slides.length, ease: "none" }, 0);
+    dayTl.to(dayMedia, { scale: 1.12, duration: slides.length, ease: "none" }, 0);
     if (clock[0]) clock[0].classList.add("is-on");
+  }
+
+  /* ------------------------------------------------------------------
+     Transição entre as páginas do site: uma onda azul-marinho (com a crista laranja) sobe e
+     cobre a tela; na página nova a tela já nasce coberta (classe "wave-in", posta no <head>
+     quando o sessionStorage tem "hl-wave") e a água desce revelando tudo.
+     ------------------------------------------------------------------ */
+  var pt = null;
+  var ptState = { h: 0 };
+  function ptPath(h, t, lift) {
+    // borda da água: h = 0 embaixo da tela, h = 1 cobrindo tudo (com folga para as ondas)
+    var y0 = 100 - h * 118 + lift;
+    var pts = [];
+    for (var x = 0; x <= 100; x += 10) pts.push([x, y0 + 4 * Math.sin(x * 0.09 + t * 6) + 2 * Math.sin(x * 0.21 - t * 9)]);
+    var d = "M0 100L0 " + pts[0][1].toFixed(2);
+    for (var j = 1; j < pts.length; j++) {
+      d += "Q" + pts[j - 1][0] + " " + pts[j - 1][1].toFixed(2) + " " + (pts[j - 1][0] + pts[j][0]) / 2 + " " + ((pts[j - 1][1] + pts[j][1]) / 2).toFixed(2);
+    }
+    return d + "L100 " + pts[pts.length - 1][1].toFixed(2) + "L100 100Z";
+  }
+  function ptDraw() {
+    var t = performance.now() / 1000;
+    var svg = pt.firstChild;
+    svg.children[0].setAttribute("d", ptPath(ptState.h, t, -3.2));
+    svg.children[1].setAttribute("d", ptPath(ptState.h, t, 0));
+  }
+  function ptLayer() {
+    if (!pt) {
+      pt = document.createElement("div");
+      pt.className = "pt";
+      pt.setAttribute("aria-hidden", "true");
+      pt.innerHTML = '<svg viewBox="0 0 100 100" preserveAspectRatio="none"><path class="pt__foam" /><path /></svg>';
+      document.body.appendChild(pt);
+    }
+    pt.style.visibility = "visible";
+    return pt;
+  }
+  function waveOut(url) {
+    ptLayer();
+    try {
+      sessionStorage.setItem("hl-wave", "1");
+    } catch (err) {}
+    gsap.fromTo(ptState, { h: 0 }, { h: 1, duration: 0.7, ease: "power2.in", onUpdate: ptDraw, onComplete: function () {
+      location.href = url;
+    } });
+  }
+  function waveIn() {
+    ptLayer();
+    ptState.h = 1;
+    ptDraw();
+    html.classList.remove("wave-in");
+    $$("[data-club-media]").forEach(function (m) {
+      m.classList.add("is-open");
+    });
+    try {
+      sessionStorage.removeItem("hl-wave");
+    } catch (err) {}
+    gsap.to(ptState, { h: 0, duration: 1.15, ease: "power3.inOut", delay: 0.1, onUpdate: ptDraw, onComplete: function () {
+      pt.style.visibility = "hidden";
+    } });
+  }
+  if (!reduced) {
+    document.addEventListener("click", function (e) {
+      if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+      var a = e.target.closest && e.target.closest("a[href]");
+      if (!a || a.target === "_blank" || a.hasAttribute("download")) return;
+      var url = new URL(a.getAttribute("href"), location.href);
+      // só páginas deste site (âncoras na mesma página continuam com a rolagem suave)
+      if (url.origin !== location.origin || url.pathname === location.pathname) return;
+      e.preventDefault();
+      if (html.classList.contains("menu-open")) html.classList.remove("menu-open");
+      waveOut(url.href);
+    });
+    // voltando pelo botão "voltar" com a página guardada na memória do navegador: sem a onda parada na tela
+    window.addEventListener("pageshow", function (e) {
+      if (e.persisted && pt) {
+        ptState.h = 0;
+        pt.style.visibility = "hidden";
+      }
+    });
   }
 
   /* ------------------------------------------------------------------
@@ -1664,6 +1982,7 @@
   var loader = $(".loader");
   var startIntro = function () {
     fontsReady.then(function () {
+      if (html.classList.contains("wave-in")) waveIn();
       introTl.play();
       window.Hollanda.introStarted = true;
       document.dispatchEvent(new Event("hollanda:intro"));
@@ -1678,7 +1997,7 @@
       seen = sessionStorage.getItem("hl-loader") === "1";
       sessionStorage.setItem("hl-loader", "1");
     } catch (err) {}
-    if (seen || location.hash.length > 1) {
+    if (seen || location.hash.length > 1 || html.classList.contains("wave-in")) {
       loader.remove();
       startIntro();
     } else {

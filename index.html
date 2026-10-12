@@ -29,6 +29,10 @@
     <link rel="stylesheet" href="assets/css/hero-b.css" />
     <script>
       document.documentElement.classList.add("js");
+      // chegou por uma transição de onda (vinda de outra página do site): a água cobre a tela até o JS revelar
+      try {
+        if (sessionStorage.getItem("hl-wave")) document.documentElement.classList.add("wave-in");
+      } catch (e) {}
     </script>
     <script type="application/ld+json">
       {
@@ -499,17 +503,17 @@
             <div class="et-l et-sky" data-et-sky>
               <div class="et-speed" data-et-speed><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
               <div class="et-fig et-fig--3" data-et-fig3>
-                <img class="et-img" src="assets/img/etapas/03-saida-tubo-1280.webp"
-                  srcset="assets/img/etapas/03-saida-tubo-1280.webp 1280w, assets/img/etapas/03-saida-tubo-2400.webp 2400w"
-                  sizes="(max-aspect-ratio: 1/1) 150vw, 68vw" width="2400" height="1351" alt="" loading="lazy" decoding="async" />
+                <img class="et-img" src="assets/img/etapas/03-toboagua-1100.webp"
+                  srcset="assets/img/etapas/03-toboagua-1100.webp 1100w, assets/img/etapas/03-toboagua-2000.webp 2000w"
+                  sizes="(max-aspect-ratio: 1/1) 100vw, 64vw" width="2000" height="1126" alt="" loading="lazy" decoding="async" />
               </div>
             </div>
             <!-- 04 · depois do splash ela volta à tona comemorando -->
             <div class="et-fig et-fig--4" data-et-fig4>
               <div class="et-drops" data-et-drops="c"></div>
-              <img class="et-img" data-et-img4 src="assets/img/etapas/04-recorte-1000.webp"
-                srcset="assets/img/etapas/04-recorte-1000.webp 1000w, assets/img/etapas/04-recorte-1800.webp 1800w"
-                sizes="(max-aspect-ratio: 1/1) 96vw, 50vw" width="1800" height="2005" alt="" loading="lazy" decoding="async" />
+              <img class="et-img" data-et-img4 src="assets/img/etapas/04-boia-1100.webp"
+                srcset="assets/img/etapas/04-boia-1100.webp 1100w, assets/img/etapas/04-boia-2000.webp 2000w"
+                sizes="(max-aspect-ratio: 1/1) 96vw, 56vw" width="2000" height="1426" alt="" loading="lazy" decoding="async" />
             </div>
             <div class="et-pool" data-et-pool>
               <div class="et-pool__wave" data-et-wave>
@@ -822,7 +826,7 @@
       </div>
     </nav>
 
-    <footer class="footer">
+    <footer class="footer" data-defer>
       <div class="container footer__top">
         <a class="brand brand--light" href="./" aria-label="Hollanda Parques & Resorts">
           <img class="footer__logo" src="assets/img/brand/hollanda-logo-white.png" alt="Hollanda Comercializadora" width="720" height="389" loading="lazy" decoding="async" />

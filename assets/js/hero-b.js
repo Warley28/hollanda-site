@@ -2,8 +2,8 @@
    Capa "opção B" — A Gota
    Desenhada ao vivo em WebGL (um único shader, sem bibliotecas 3D):
    0  capa: uma bolha d'água em 3D com o parque dentro (refração, reflexo de estúdio, balanço)
-   →  ao rolar, uma onda de surf se enrola em volta da bolha e a bolha cresce até virar o fundo:
-      a foto sai da bolha e ocupa a tela inteira
+   →  ao rolar, a onda fecha um tubo em volta da bolha (a visão de quem surfa dentro do tubo) e a
+      gente sai por ele: a saída cresce até a foto ocupar a tela inteira
    1–4  uma frase por parada, sobre a foto em tela cheia; a troca de foto é uma onda pintada
       que atravessa a tela
    5  a tela se divide em três faixas (uma foto inteira por empreendimento) com divisórias de água.
@@ -37,7 +37,7 @@
   /* ------------------------------------------------------------------
      WebGL
      ------------------------------------------------------------------ */
-  var opts = { antialias: false, alpha: false, depth: false, stencil: false, premultipliedAlpha: false, powerPreference: "high-performance" };
+  var opts = { antialias: false, alpha: false, depth: false, stencil: false, premultipliedAlpha: false, powerPreference: "high-performance", preserveDrawingBuffer: !!window.HERO_B_RECORD };
   var gl = canvas.getContext("webgl2", opts) || canvas.getContext("webgl", opts);
   var gl2 = typeof WebGL2RenderingContext !== "undefined" && gl instanceof WebGL2RenderingContext;
 
@@ -56,17 +56,48 @@
     // foto "cobrindo" a tela (s em unidades de tela: altura = 2) e "cobrindo" um painel
     "vec2 cover(vec2 s,float ia,float a){float h=max(1.,a/ia);return .5+s/(2.*vec2(h*ia,h));}",
     "vec2 panelUV(vec2 p,vec2 pc,vec2 hs,float ia){float h=max(hs.y,hs.x/ia);return .5+(p-pc)/(2.*vec2(h*ia,h));}",
-    // água pintada (pinceladas ao longo do fluxo): u ao longo, v através da onda (0 fundo, 1 crista)
-    "vec3 water(float u,float v){",
-    " float s1=fbm(vec2(u*1.4,v*4.)+vec2(uTime*.22,0.));float s2=noise(vec2(u*5.5,v*20.)+vec2(uTime*.5,0.));",
-    " vec3 c=mix(vec3(.03,.16,.48),vec3(.1,.42,.86),smoothstep(0.,.6,v+(s1-.5)*.55));",
-    " c=mix(c,vec3(.5,.77,1.),smoothstep(.45,.92,v+(s2-.5)*.4));",
-    " c=mix(c,vec3(.9,.96,1.),smoothstep(.84,1.02,v+(s1-.5)*.3)*.9);",
-    " return c*(.84+.16*smoothstep(.25,.75,s2));}",
-    // respingos à frente da crista (v>1)
-    "float spray(float u,float v){vec2 g=vec2(u*9.,(v-1.)*9.);vec2 id=floor(g),f=fract(g)-.5;",
-    " float r=.1+.18*hash(id+3.1);vec2 o=(vec2(hash(id+1.7),hash(id+5.3))-.5)*.5;",
-    " return smoothstep(r,r*.45,length(f-o))*step(.55,hash(id))*smoothstep(1.75,1.,v)*step(1.,v);}",
+    // espuma rendada: as bordas finas das células de um Voronoi que se mexe devagar
+    "float lace(vec2 p){p+=(vec2(noise(p*.7),noise(p*.7+5.2))-.5)*1.7;vec2 i=floor(p),f=fract(p);float d1=8.,d2=8.;",
+    " for(int y=-1;y<=1;y++)for(int x=-1;x<=1;x++){vec2 g=vec2(float(x),float(y));vec2 o=vec2(hash(i+g),hash(i+g+19.1));",
+    "  o=.5+.42*sin(uTime*.7+6.2831*o);float dd=length(g+o-f);if(dd<d1){d2=d1;d1=dd;}else if(dd<d2)d2=dd;}",
+    " float wd=.03+.11*noise(p*1.3+3.);",
+    " float patch=smoothstep(.22,.62,noise(p*.45+7.));",
+    " return max(1.-smoothstep(0.,wd,d2-d1),smoothstep(.64,.86,noise(p*.9+11.))*.85)*patch;}",
+    // respingos: gotinhas soltas (uma em algumas células de uma grade)
+    "float drops(vec2 p,float dens){vec2 id=floor(p),f=fract(p)-.5;float h=hash(id);",
+    " vec2 o=(vec2(hash(id+1.7),hash(id+5.3))-.5)*.6;float rr=.06+.14*hash(id+3.1);",
+    " return smoothstep(rr,rr*.4,length(f-o))*step(1.-dens,h);}",
+    // o tubo da onda visto de dentro (como o surfista vê): d = posição a partir do centro da saída,
+    // R = raio da saída, tw = quanto o tubo já fechou (0–1), spd = velocidade com que atravessamos.
+    // A parede gira em espiral e corre para fora; em cima a água é fina e a luz passa (turquesa);
+    // longe da saída fica funda e escura; espuma branca na saída e na crista que fecha; respingos no vão.
+    "vec4 tube(vec2 d,float R,float tw,float spd){",
+    " float r=length(d);vec2 cs=d/max(r,1e-4);float th=atan(d.y,d.x);float t=uTime;",
+    " float v=log(max(r,1e-4)/R);",
+    " float ph=.5-.5*cs.y;",
+    " float T=1.3*(1.-smoothstep(0.,1.,tw*1.3-ph*.3))+.22*(.5+.5*sin(th+tw*5.))*(1.-tw);",
+    " float a2=th+v*1.25-t*.4;vec2 q=vec2(cos(a2),sin(a2));",
+    " float body=fbm(q*2.3+vec2(v*2.4-t*(.8+spd*3.),0.));",
+    " float lip=v-T+(body-.5)*.3;",
+    " if(lip<-.45)return vec4(0.);",
+    " float lum=smoothstep(-.6,.95,cs.y)*exp(-max(v,0.)*1.05);",
+    " vec3 col=mix(vec3(.03,.37,.56),vec3(.008,.07,.2),smoothstep(.1,1.25,v+(body-.5)*.45));",
+    " col=mix(col,vec3(.16,.74,.84),lum*.8);col=mix(col,vec3(.72,.95,.98),lum*lum*.4);",
+    " float lines=pow(.5+.5*sin(v*12.+th*3.-t*(3.2+spd*9.)+3.*body),8.);",
+    " col+=lines*(.14+.5*lum)*vec3(.82,.96,1.);",
+    " col+=drops(q*vec2(16.,16.)+vec2(v*34.-t*5.,0.),.05)*1.1*(.25+lum);",
+    " col*=1.-.45*smoothstep(.9,1.8,v);",
+    " float fz=smoothstep(.2,0.,v+(body-.5)*.2)*smoothstep(-.02,.06,v);",
+    " fz=max(fz,smoothstep(.3,0.,lip)*(1.-smoothstep(.85,1.,tw)));",
+    " if(fz>.01)col=mix(col,vec3(.94,.985,1.),fz*(.5+.5*lace(d/R*7.+vec2(0.,-t*.6))));",
+    " float shut=smoothstep(.55,.95,tw);",
+    // o vão que ainda não fechou é a face da onda (água azul-turquesa, não um buraco escuro)
+    " col=mix(mix(vec3(.05,.45,.62),vec3(.02,.22,.4),smoothstep(0.,1.2,v)),col,smoothstep(-.05,.05,lip));",
+    " float rimF=smoothstep(.14,0.,abs(v-.03)+(body-.5)*.12)*shut;",
+    " col=mix(col,vec3(.93,.98,1.),rimF*(.55+.45*lace(d/R*9.+vec2(-t*.4,0.))));",
+    " float al=max(smoothstep(-.03,.03,lip),shut*smoothstep(-.06,.0,v));",
+    " float sp=drops(d/R*14.+cs*t*1.5,.35)*smoothstep(-.45,-.02,lip)*(1.-al)*(1.-uBub.w);",
+    " return vec4(mix(col,vec3(.86,.95,1.),sp),max(al,sp*.9));}",
     // estúdio refletido na bolha: caixa de luz, faixa à esquerda e o pôr do sol à direita
     "vec3 env(vec3 r){vec3 c=mix(vec3(.01,.03,.07),vec3(.05,.12,.24),smoothstep(-.6,.8,r.y));",
     " vec2 b=vec2(r.x+.3,r.y-.42);c+=vec3(1.,1.02,1.05)*smoothstep(.09,0.,max(abs(b.x)-.15,abs(b.y)-.09))*9.;",
@@ -116,10 +147,11 @@
     "  col=background(p);",
     "  vec2 c=uBub.xy;float R=max(uBub.z,1e-4);float g=uBub.w;",
     "  vec2 d=p-c;float r=length(d);float th=atan(d.y,d.x);",
-    "  float cov=uRing.x;float fr=fract((th-uRing.z)/6.28318);",
-    "  float arm=cov>.001?smoothstep(1.-cov,1.-cov+.08,fr):0.;",
+    "  float tw=uRing.x;float glass=uRing.y;",
     "  float ang=th;float lean=dot(d/(r+1e-5),uVel)*(1.-g);",
-    "  float Re=R*(1.+uWob*.018*(.6*sin(ang*3.+uTime*1.3)+.4*sin(ang*2.-uTime*.9+1.))*(1.-g)+.08*lean);",
+    // quando vira a saída do tubo, a borda deixa de ser um círculo perfeito
+    "  float edge=(fbm(vec2(cos(th),sin(th))*2.2+uTime*.25)-.5)*.08*tw*(1.-g);",
+    "  float Re=R*(1.+uWob*.018*(.6*sin(ang*3.+uTime*1.3)+.4*sin(ang*2.-uTime*.9+1.))*(1.-g)+.08*lean+edge);",
     "  vec2 q=d/Re;float rq=length(q);",
     "  float inside=1.-smoothstep(1.-1.6*px/Re,1.,rq);",
     "  vec3 n=normalize(vec3(q,-sqrt(max(1.-rq*rq,1e-4))));vec3 rd=vec3(0.,0.,1.);float nv=clamp(-n.z,0.,1.);",
@@ -129,7 +161,6 @@
     "  vec2 m=uMouse*.012*g;vec2 lq=q*1.5*uLens/uZoom;",
     "  vec3 inner=vec3(texture2D(uA,cover(mix(lq+r1*uLens/uZoom,p+m,g),uAsp.x,a)).r,",
     "   texture2D(uA,cover(mix(lq+r2*uLens/uZoom,p+m,g),uAsp.x,a)).g,texture2D(uA,cover(mix(lq+r3*uLens/uZoom,p+m,g),uAsp.x,a)).b);",
-    "  float glass=1.-smoothstep(0.,.6,g);",
     "  vec3 ins=inner*mix(vec3(1.),vec3(.78,.94,1.06),pow(1.-nv,1.5)*glass);",
     "  ins*=mix(1.,.32+.68*smoothstep(0.,.62,nv),glass);",
     "  ins+=vec3(1.,.84,.6)*.38*smoothstep(.42,1.,dot(q,normalize(vec2(.5,-.72))))*smoothstep(.08,.6,nv)*glass;",
@@ -140,39 +171,37 @@
     "   +uGlow*pow(max(dot(n,normalize(normalize(vec3(.85,-.15,-.3))-rd)),0.),70.)*.9+uGlow*pow(1.-nv,3.)*smoothstep(-.2,.8,n.x)*.35)*glass;",
     "  bub=mix(bub,scrim(bub,p,a),g);",
     "  col=mix(col,bub,inside);",
-    // a onda passa por cima da borda da bolha (fica na frente dela)
-    "  if(arm>0.){",
-    "   float W=uRing.y*(.2+.8*smoothstep(1.-cov,1.,fr));float u=fr*11.3;",
-    "   float vv=(r-R*.93)/max(W,1e-4)+(fbm(vec2(u*2.,uTime*.5))-.5)*.18;",
-    "   float band=arm*smoothstep(-.03,.03,vv)*(1.-smoothstep(.95,1.05,vv));",
-    "   vec3 wc=water(u,clamp(vv,0.,1.));",
-    "   col=mix(col,wc,band*(.78+.22*smoothstep(.2,.8,vv)));",
-    "   float foam=smoothstep(.78,.97,vv+(fbm(vec2(u*3.,vv*6.)+uTime*.3)-.5)*.3)*band;",
-    "   col=mix(col,vec3(.95,.98,1.),foam*.9);",
-    "   col=mix(col,vec3(.82,.93,1.),spray(u*1.4,vv)*arm*smoothstep(.45,1.,fr)*.9);",
-    "  }",
+    // o tubo da onda em volta (e por cima da borda da bolha)
+    "  if(tw>.001){vec4 w=tube(d,Re,tw,uRing.z);col=mix(col,w.rgb,w.a);}",
     " }else{",
     // ---- fotos em tela cheia; a troca é uma onda que atravessa a tela ----
-    "  bool tall=uPortrait>.5;float L=tall?1.:a;float Wd=tall?.6:.78;",
+    "  bool tall=uPortrait>.5;float L=tall?1.:a;float Wd=tall?.8:1.;",
     "  float x=(tall?-p.y:p.x)*uDir;float yy=tall?p.x:p.y;vec2 mv=tall?vec2(0.,uDir):vec2(-uDir,0.);",
-    "  float front=mix(L+.5,-L-Wd-.5,uSweep)+.1*sin(yy*2.3+uTime*1.1)+.07*(noise(vec2(yy*2.2,uTime*.35))-.5)+yy*.22;",
-    "  float v=(x-front)/Wd+(fbm(vec2(yy*3.,uTime*.4))-.5)*.22;",
-    "  float band=smoothstep(-.02,.02,v)*(1.-smoothstep(.98,1.02,v));float vw=clamp(1.-v,0.,1.);",
+    "  float front=mix(L+.6,-L-Wd-1.6,uSweep)+.09*sin(yy*2.1+uTime*1.1)+.05*(noise(vec2(yy*2.5,uTime*.4))-.5)+yy*.2;",
+    "  float body=fbm(vec2(yy*2.2+uTime*.12,x*1.4-uSweep*3.));",
+    "  float v=(x-front)/Wd+(body-.5)*.2;",
+    "  float band=smoothstep(-.015,.015,v)*(1.-smoothstep(.96,1.04,v));float w=clamp(v,0.,1.);",
     "  vec2 m=uMouse*.012;",
     // a água empurra a foto da frente e deforma o que está por baixo dela
-    "  vec2 wr=(vec2(noise(p*5.+uTime*.6),noise(p*5.+3.-uTime*.6))-.5)*.07*band+mv*(.03+.05*vw)*band;",
+    "  vec2 wr=(vec2(noise(p*5.+uTime*.6),noise(p*5.+3.-uTime*.6))-.5)*.08*band+mv*(.02+.06*(1.-w))*band;",
     "  vec2 offA=mv*.06*exp(min(v,0.)*6.)*step(v,0.)+wr;",
-    "  vec2 offB=mv*.05*exp(-max(v-1.,0.)*6.)*step(1.,v)+wr;",
+    "  vec2 offB=mv*.05*exp(-max(v-1.,0.)*5.)*step(1.,v)+wr;",
     "  vec3 cA=scrim(texture2D(uA,cover(p+m+offA,uAsp.x,a)).rgb,p,a);",
     "  vec3 cB=uPanels>.5?panels(p+offB,a):scrim(texture2D(uB,cover(p+m+offB,uAsp.y,a)).rgb,p,a);",
-    "  cA*=1.-.28*exp(min(v,0.)*7.)*step(v,0.);", // sombra logo à frente da crista
-    "  float u=yy*1.3+uSweep*2.;",
-    "  vec3 under=mix(cB,cA,smoothstep(.35,.8,vw));",
-    "  col=v<0.?cA:(v>1.?cB:under);",
-    "  col=mix(col,water(u,vw),band*(.42+.4*vw));",
-    "  float foam=smoothstep(.8,.97,vw+(fbm(vec2(u*3.,v*7.)+uTime*.3)-.5)*.32)*band;",
-    "  col=mix(col,vec3(.95,.98,1.),foam*.92);",
-    "  col=mix(col,vec3(.88,.95,1.),spray(u*1.3,1.-v)*.9);",
+    "  cA*=1.-.3*exp(min(v,0.)*7.)*step(v,0.);", // sombra logo à frente da crista
+    // crista de espuma → água turquesa transparente (a foto aparece por baixo) → corpo azul mais fundo
+    "  vec3 under=mix(cA,cB,smoothstep(.3,.85,w));",
+    "  vec3 wc=mix(vec3(.18,.76,.86),vec3(.03,.37,.56),smoothstep(.04,.45,w));wc=mix(wc,vec3(.02,.2,.42),smoothstep(.45,1.,w));",
+    "  float lines=pow(.5+.5*sin(w*30.+body*6.-uSweep*24.),9.);",
+    "  vec3 water=mix(wc,under*wc*1.9,mix(.62,.34,smoothstep(.05,.75,w)));",
+    "  water+=lines*.24*(1.-w)*vec3(.85,.97,1.)+drops(vec2(yy*1.8,x)*22.+vec2(0.,-uTime*2.),.1)*1.3*(1.-w);",
+    "  col=mix(v<.5?cA:cB,water,band);",
+    // espuma rendada na crista e a que fica para trás sobre a foto nova, se desfazendo
+    "  float crest=smoothstep(.17,0.,w+(body-.5)*.1)*band;",
+    "  float trail=step(1.,v)*smoothstep(1.95,1.05,v);",
+    "  if(crest+trail>.01){float l=lace(vec2(yy,x)*6.5+vec2(uSweep*2.,0.));",
+    "   col=mix(col,vec3(.95,.99,1.),crest*(.65+.35*l));col=mix(col,vec3(.93,.98,1.),trail*l*.4);}",
+    "  col=mix(col,vec3(.9,.97,1.),drops(vec2(yy,x)*15.+vec2(0.,uSweep*9.),.3)*smoothstep(-.4,-.02,v)*step(v,0.)*.9);",
     " }",
     " col*=1.-.32*pow(length(p*vec2(.55,.8)),2.4)*.5;",
     " col+=(hash(fc+fract(uTime*7.)*91.)-.5)*.02;",
@@ -239,7 +268,9 @@
   function texture(name) {
     var t = gl.createTexture();
     gl.bindTexture(gl.TEXTURE_2D, t);
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false); // (o Firefox avisa se inverter um pixel solto)
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGB, 1, 1, 0, gl.RGB, gl.UNSIGNED_BYTE, new Uint8Array([8, 30, 66]));
+    gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, true);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
@@ -338,7 +369,8 @@
     W = Math.max(1, rect.width);
     Hh = Math.max(1, rect.height);
     aspect = W / Hh;
-    var base = Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75);
+    // na gravação do vídeo, resolução cheia (a tela é ampliada 2× e reduzida depois: bordas lisas)
+    var base = window.HERO_B_RECORD ? window.devicePixelRatio || 1 : Math.min(window.devicePixelRatio || 1, mobile ? 1.5 : 1.75);
     dpr = base * scale;
     canvas.width = Math.round(W * dpr);
     canvas.height = Math.round(Hh * dpr);
@@ -426,15 +458,18 @@
 
       if (k === 0) {
         // capa → a onda se enrola em volta da bolha → a bolha cresce até virar o fundo
+        // 1ª metade: a onda fecha o tubo em volta da bolha; 2ª metade: a gente sai pelo tubo
+        // (a saída cresce até a foto ocupar a tela, e a parede de água corre para fora)
         var R0 = home[2] * appear.v;
-        var grow = inOut(smooth(0.3, 1, e));
+        var tw = smooth(0.02, 0.46, e);
+        var grow = inOut(smooth(0.46, 1, e));
         var cx = lerp(bub.x, 0, grow),
           cy = lerp(bub.y, 0, grow);
-        var Rmax = Math.hypot(aspect, 1) * 1.12 + Math.hypot(cx, cy);
+        var Rmax = (Math.hypot(aspect, 1) + Math.hypot(cx, cy)) * 1.7;
         var R = lerp(R0, Rmax, grow);
         gl.uniform1f(U.uMode, 0);
-        gl.uniform4f(U.uBub, cx, cy, R, smooth(0.42, 1, e));
-        gl.uniform3f(U.uRing, smooth(0, 0.3, e), home[2] * (0.22 + 0.6 * smooth(0.05, 0.55, e)) + R * 0.3 * grow, time * 0.5 + e * 9);
+        gl.uniform4f(U.uBub, cx, cy, R, smooth(0.52, 1, e));
+        gl.uniform3f(U.uRing, tw, 1 - smooth(0.24, 0.55, e), 4 * grow * (1 - grow));
         gl.uniform1f(U.uZoom, 1);
         bind(0, SEQ[0]);
         bind(1, SEQ[0]);
@@ -463,7 +498,7 @@
     gl.bindTexture(gl.TEXTURE_2D, tex(name).tex);
   }
   function queue() {
-    if (!running && visible) {
+    if (!running && visible && !recording) {
       running = true;
       requestAnimationFrame(step);
     }
@@ -713,4 +748,32 @@
   // garantia: se o aviso da entrada não vier (sem GSAP), entra mesmo assim
   setTimeout(enter, 5000);
   queue();
+
+  /* ------------------------------------------------------------------
+     Gravação do vídeo de apresentação (tools/gravar_video.mjs): desenha quadro a quadro, com o
+     tempo e a posição da história dados de fora — sem rolagem e sem depender do relógio
+     ------------------------------------------------------------------ */
+  var recording = false;
+  window.HeroB = {
+    ready: function () {
+      return Promise.all(ORDER.map(function (n) {
+        return gl ? load(n) : null;
+      }));
+    },
+    // t: segundos do vídeo · p: posição na história (0 capa … 5 empreendimentos) · ap: bolha 0–1
+    // mx/my: "mouse" (move a bolha e a profundidade de leve, como uma câmera) · kick: balanço extra
+    frame: function (o) {
+      recording = true;
+      visible = true;
+      t0 = 0;
+      last = o.t * 1000 - 1000 / 60;
+      Ptarget = P = o.p;
+      appear.v = o.ap === undefined ? 1 : o.ap;
+      mouse.tx = o.mx || 0;
+      mouse.ty = o.my || 0;
+      if (o.kick) wob.vel += o.kick;
+      step(o.t * 1000);
+      gl.finish();
+    },
+  };
 })();

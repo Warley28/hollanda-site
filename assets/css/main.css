@@ -1694,15 +1694,13 @@ html:not(.js) .loader,
     radial-gradient(45% 55% at 16% 10%, rgba(255, 246, 214, 0.9), rgba(255, 246, 214, 0) 70%),
     linear-gradient(180deg, #a8dbfb 0%, #d3eeff 48%, #f3faff 100%);
 }
+/* a menina saindo do toboágua (tools/make_etapa4.py, fonte assets-src/etapas/03-toboagua.png): o
+   toboágua vai inteiro, à direita; a imagem é espelhada para ela "sair" na direção do texto */
 .et-fig--3 {
-  right: calc(var(--u) * -2);
-  bottom: 0;
-  width: calc(var(--u) * 66);
-  aspect-ratio: 2400 / 1351;
-}
-.et-fig--3 {
-  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 16%);
-  mask-image: linear-gradient(90deg, transparent 0, #000 16%);
+  right: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 5.5); /* acima do botão "Fale com a Hollanda" */
+  width: calc(var(--u) * 60);
+  aspect-ratio: 2000 / 1126;
 }
 .et-fig--3 .et-img {
   transform: scaleX(-1);
@@ -1723,15 +1721,15 @@ html:not(.js) .loader,
 .et-speed i:nth-child(6) { top: 56%; width: calc(var(--u) * 16); }
 .et-speed i:nth-child(7) { top: 64%; width: calc(var(--u) * 24); }
 
-/* 04 */
+/* 04: a menina na boia no meio dos respingos (tools/make_etapa4.py); a boia fica na linha d'água */
 .et-fig--4 {
-  right: calc(var(--u) * 3);
-  bottom: calc(var(--u) * -1);
-  height: calc(var(--u) * 52);
-  aspect-ratio: 1800 / 2005;
+  right: calc(var(--u) * 2);
+  bottom: calc(var(--u) * 3);
+  height: calc(var(--u) * 41);
+  aspect-ratio: 2000 / 1426;
 }
 .et-fig--4 .et-drops {
-  top: 78%;
+  top: 70%;
 }
 .et-pool {
   position: absolute;
@@ -2128,13 +2126,16 @@ html:not(.js) .loader,
     margin: -55% 0 0 -55%;
   }
   .et-fig--3 {
-    right: calc(var(--u) * -26);
-    width: calc(var(--u) * 96);
+    right: calc(var(--u) * 1);
+    bottom: calc(var(--u) * 10);
+    width: calc(var(--u) * 54);
   }
   .et-fig--4 {
     right: auto;
-    left: calc(50% - var(--u) * 25);
-    height: calc(var(--u) * 56);
+    /* maior que a tela: só as pontas dos respingos saem pelas laterais (a boia fica inteira) */
+    left: calc(50% - var(--u) * 31);
+    height: calc(var(--u) * 44);
+    bottom: calc(var(--u) * 3.5);
   }
   .et-pool {
     height: calc(var(--u) * 12);
@@ -2841,7 +2842,7 @@ html:not(.js) .island,
   line-height: 0.88;
   letter-spacing: -0.06em;
   font-weight: 500;
-  will-change: transform;
+  /* sem will-change: o nome cresce ao rolar e ficaria borrado */
 }
 .club-hero__name span {
   display: block;
@@ -3596,7 +3597,8 @@ html:not(.js) .island,
     width: auto;
     align-items: flex-start;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    /* "proximity": o dedo desliza livre e só encaixa perto de uma foto (o "mandatory" dava trancos) */
+    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
   }
@@ -3781,4 +3783,283 @@ html:not(.js) .hero__canvas {
   .tile--media {
     min-height: 240px;
   }
+}
+
+/* ==========================================================================
+   Páginas dos clubes: capas leves, linhas d'água, o sol do dia e a galeria no celular
+   ========================================================================== */
+/* o "HOLLANDA" com foto do rodapé só baixa perto do fim da página (190 KB em toda página) */
+html.js .footer:not(.is-near) .footer__mark {
+  background-image: none;
+  -webkit-mask: none;
+  mask: none;
+}
+/* foto que ainda vai baixar (app.js, [data-defer]): sem o texto alternativo aparecendo no lugar */
+img[data-lazy-src] {
+  color: transparent;
+}
+/* capa (WebP) atrás do vídeo: aparece na hora; o vídeo surge por cima quando começa a tocar */
+.media-poster,
+.media-poster img {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.club-hero__media video,
+.day__media video {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s var(--ease);
+}
+.club-hero__media video.is-playing,
+.day__media video.is-playing {
+  opacity: 1;
+}
+.page-club--ouro-verde .media-poster img {
+  object-position: 34% 50%;
+}
+.page-club--raposa .club-hero__media .media-poster img {
+  filter: brightness(0.78) saturate(1.05);
+}
+.club-hero__content {
+  padding-bottom: calc(clamp(30px, 6vh, 70px) + 30px);
+}
+/* a foto da capa começa fechada e se abre como uma bolha (app.js); se o JS não rodar, abre em 3,5 s */
+@media (prefers-reduced-motion: no-preference) {
+  html.js:not(.wave-in) .club-hero__media {
+    clip-path: circle(0% at 50% 72%);
+    animation: clubHeroOpen 0s 3.5s forwards;
+  }
+  html.js .club-hero__media.is-open {
+    clip-path: none;
+    animation: none;
+  }
+}
+@keyframes clubHeroOpen {
+  to {
+    clip-path: circle(150% at 50% 72%);
+  }
+}
+.next__poster {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scale(1.1);
+  transition: transform 1.6s var(--ease);
+}
+.next:hover .next__poster {
+  transform: scale(1);
+}
+.next video {
+  opacity: 0;
+  transition: opacity 0.6s, transform 1.6s var(--ease);
+}
+.next video.is-playing {
+  opacity: 1;
+}
+
+/* linha d'água entre as seções: o desenho é feito pelo app.js (ondas que se mexem e ficam mais
+   agitadas quando a rolagem é rápida); a cor é a da seção de baixo */
+.highlights,
+.product {
+  position: relative;
+}
+.wave {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  z-index: 3;
+  display: block;
+  width: 100%;
+  height: clamp(34px, 5.5vw, 80px);
+  pointer-events: none;
+}
+.wave path {
+  fill: currentColor;
+}
+.wave .wave__back {
+  opacity: 0.4;
+}
+.wave--paper {
+  color: var(--paper);
+}
+.wave--deep {
+  color: var(--deep);
+}
+.wave--foam {
+  color: var(--foam);
+}
+
+/* um dia no clube: o sol percorre o arco; a luz muda por uma camada de cor (mais leve que filtrar o vídeo) */
+.day__media {
+  will-change: transform;
+}
+.day__media video {
+  will-change: auto;
+}
+.day__tint {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  mix-blend-mode: soft-light;
+  background: rgb(120, 180, 255);
+  opacity: 0.32;
+}
+.day__sun {
+  display: block;
+  width: 220px;
+  height: auto;
+  margin: 26px 0 28px;
+  overflow: visible;
+}
+.day .eyebrow,
+.day__clock,
+.day__slide {
+  text-shadow: 0 1px 18px rgba(3, 18, 44, 0.5);
+}
+.day__sun {
+  filter: drop-shadow(0 1px 8px rgba(3, 18, 44, 0.45));
+}
+/* sobre a foto clara do dia, o laranja escuro do título sumia: um pêssego claro lê melhor */
+.day .eyebrow {
+  color: #ffd2a1;
+}
+.day__arc {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.5);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 7;
+  stroke-linecap: round;
+}
+.day__arc--on {
+  stroke: var(--accent, var(--orange));
+  stroke-dasharray: none;
+  stroke-width: 2;
+}
+.day__horizon {
+  stroke: rgba(255, 255, 255, 0.2);
+  stroke-width: 1;
+}
+.day__sun-dot {
+  fill: #ffd27a;
+}
+.day__sun-glow {
+  fill: rgba(255, 196, 92, 0.26);
+}
+
+/* galeria: barra de progresso (no computador acompanha a rolagem; no celular, o dedo) */
+.gallery__progress {
+  position: relative;
+  height: 2px;
+  margin-top: clamp(22px, 3.4vh, 38px);
+}
+.gallery__progress::before,
+.gallery__progress span {
+  content: "";
+  position: absolute;
+  left: var(--gutter);
+  top: 0;
+  height: 2px;
+  border-radius: 2px;
+}
+.gallery__progress::before {
+  right: var(--gutter);
+  background: rgba(255, 255, 255, 0.14);
+}
+.gallery__progress span {
+  width: calc((100% - 2 * var(--gutter)) * var(--p, 0));
+  background: var(--accent, var(--orange));
+}
+.gallery__item img {
+  will-change: transform;
+}
+
+@media (max-width: 900px) {
+  /* galeria no celular: sem o espaço vazio de uma tela inteira; fotos maiores, uma de cada vez */
+  .gallery__pin {
+    min-height: 0;
+    padding: calc(var(--nav-h) + 24px) 0 64px;
+  }
+  .gallery__track {
+    gap: 12px;
+    scroll-padding-inline: var(--gutter);
+  }
+  .gallery__item {
+    width: 88vw;
+    scroll-snap-align: start;
+  }
+  .gallery__item--tall {
+    width: 70vw;
+  }
+  /* um dia no clube: texto embaixo, foto em cima; horários num selo legível */
+  .day__shade {
+    background: linear-gradient(0deg, rgba(3, 18, 44, 0.92) 0%, rgba(3, 18, 44, 0.62) 50%, rgba(3, 18, 44, 0.3) 100%);
+  }
+  .day__content {
+    align-content: end;
+    gap: 18px;
+    padding-bottom: 12vh;
+  }
+  .day__sun {
+    width: 150px;
+    margin: 14px 0 14px;
+  }
+  .day__clock {
+    display: inline-flex;
+    padding: 9px 16px;
+    border-radius: 999px;
+    background: rgba(3, 18, 44, 0.55);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    gap: 6px 16px;
+    font-size: 0.7rem;
+    letter-spacing: 0.16em;
+  }
+  .day__clock li {
+    opacity: 0.62;
+  }
+}
+
+/* transição entre páginas: uma onda azul-marinho cobre a tela, a página troca e a onda desce */
+.pt {
+  position: fixed;
+  inset: 0;
+  z-index: 300;
+  pointer-events: none;
+  visibility: hidden;
+}
+.pt svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.pt path {
+  fill: var(--deep);
+}
+.pt .pt__foam {
+  fill: var(--orange);
+}
+/* chegando por uma onda: a tela já começa coberta (some sozinha em 3 s se o JS falhar) */
+html.wave-in::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 299;
+  background: var(--deep);
+  animation: ptSafety 0.4s 3s forwards;
+}
+@keyframes ptSafety {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+.reduced .wave {
+  display: none;
 }

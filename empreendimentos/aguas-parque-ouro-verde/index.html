@@ -19,10 +19,15 @@
       href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;500;600;700;800&family=Yellowtail&display=swap"
       rel="stylesheet"
     />
-    <link rel="preload" as="image" href="../../assets/video/ouro-verde.jpg" />
+    <link rel="preload" as="image" href="../../assets/video/ouro-verde-mobile.webp" media="(max-width: 767px)" fetchpriority="high" />
+    <link rel="preload" as="image" href="../../assets/video/ouro-verde.webp" media="(min-width: 768px)" fetchpriority="high" />
     <link rel="stylesheet" href="../../assets/css/main.css" />
     <script>
       document.documentElement.classList.add("js");
+      // chegou por uma transição de onda (vinda de outra página do site): a água cobre a tela até o JS revelar
+      try {
+        if (sessionStorage.getItem("hl-wave")) document.documentElement.classList.add("wave-in");
+      } catch (e) {}
     </script>
     <script type="application/ld+json">
       {
@@ -73,17 +78,12 @@
     <main id="conteudo">
       <!-- HERO do empreendimento -->
       <section class="club-hero" data-club-hero>
-        <div class="club-hero__media">
-          <video
-            data-video
-            data-src="../../assets/video/ouro-verde.mp4"
-            data-src-mobile="../../assets/video/ouro-verde-mobile.mp4"
-            poster="../../assets/video/ouro-verde.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+        <div class="club-hero__media" data-club-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" srcset="../../assets/video/ouro-verde-mobile.webp" />
+            <img src="../../assets/video/ouro-verde.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/ouro-verde.mp4" data-src-mobile="../../assets/video/ouro-verde-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
         <div class="club-hero__shade"></div>
         <div class="club-hero__content container">
@@ -102,6 +102,8 @@
             <a class="btn btn--light" href="#produto" data-magnetic>Conhecer o direito de uso</a>
           </div>
         </div>
+        <!-- linha d'água: a capa termina numa onda que se mexe (mais agitada quando a rolagem é rápida) -->
+        <svg class="wave wave--paper" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Manifesto do clube -->
@@ -128,7 +130,7 @@
           </div>
           <div class="bento">
             <div class="tile tile--media tile--tall">
-              <img src="../../assets/img/ouro-verde/familia-chafariz-800.webp" srcset="../../assets/img/ouro-verde/familia-chafariz-800.webp 800w, ../../assets/img/ouro-verde/familia-chafariz-1600.webp 1600w, ../../assets/img/ouro-verde/familia-chafariz-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Família brincando no chafariz da piscina" loading="lazy" decoding="async" />
+              <img src="../../assets/img/ouro-verde/familia-chafariz-800.webp" srcset="../../assets/img/ouro-verde/familia-chafariz-800.webp 800w, ../../assets/img/ouro-verde/familia-chafariz-1600.webp 1600w, ../../assets/img/ouro-verde/familia-chafariz-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Família brincando no chafariz da piscina" loading="lazy" decoding="async" />
               <p class="tile__kicker">Grande porte</p>
               <div><h3>Um parque à altura do sertão</h3><p>Estrutura pensada para receber famílias de toda a região.</p></div>
             </div>
@@ -141,7 +143,7 @@
               <div><h3>Petrolina · PE</h3><p>Sertão pernambucano, sol o ano inteiro.</p></div>
             </div>
             <div class="tile tile--media tile--tall">
-              <img src="../../assets/img/ouro-verde/tobogas-800.webp" srcset="../../assets/img/ouro-verde/tobogas-800.webp 800w, ../../assets/img/ouro-verde/tobogas-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Família descendo toboáguas coloridos com muita água" loading="lazy" decoding="async" />
+              <img src="../../assets/img/ouro-verde/tobogas-800.webp" srcset="../../assets/img/ouro-verde/tobogas-800.webp 800w, ../../assets/img/ouro-verde/tobogas-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="447" alt="Família descendo toboáguas coloridos com muita água" loading="lazy" decoding="async" />
               <p class="tile__kicker">Toboáguas</p>
               <div><h3>Splash garantido</h3><p>Descidas para adultos e crianças.</p></div>
             </div>
@@ -154,7 +156,7 @@
               </div>
             </div>
             <div class="tile tile--media tile--wide">
-              <img src="../../assets/img/ouro-verde/polvo-800.webp" srcset="../../assets/img/ouro-verde/polvo-800.webp 800w, ../../assets/img/ouro-verde/polvo-1600.webp 1600w, ../../assets/img/ouro-verde/polvo-2400.webp 2400w" sizes="(max-width: 900px) 100vw, 56vw" width="800" height="600" alt="Escorregador infantil em forma de polvo" loading="lazy" decoding="async" />
+              <img src="../../assets/img/ouro-verde/polvo-800.webp" srcset="../../assets/img/ouro-verde/polvo-800.webp 800w, ../../assets/img/ouro-verde/polvo-1600.webp 1600w, ../../assets/img/ouro-verde/polvo-2400.webp 2400w" sizes="(max-width: 600px) 64vw, (max-width: 900px) 100vw, 56vw" width="800" height="600" alt="Escorregador infantil em forma de polvo" loading="lazy" decoding="async" />
               <p class="tile__kicker">Para os pequenos</p>
               <div><h3>Área infantil temática</h3></div>
             </div>
@@ -164,10 +166,11 @@
             </a>
           </div>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Galeria horizontal (fixada no desktop, arrastável no celular) -->
-      <section class="gallery" data-hscroll aria-label="Galeria">
+      <section class="gallery" data-hscroll data-defer aria-label="Galeria">
         <div class="gallery__pin">
           <div class="container gallery__head">
             <div>
@@ -177,39 +180,45 @@
             <p data-reveal>Imagens ilustrativas do projeto Águas Parque Ouro Verde.</p>
           </div>
           <div class="gallery__track" data-hscroll-track>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/tobogas-criancas-800.webp" srcset="../../assets/img/ouro-verde/tobogas-criancas-800.webp 800w, ../../assets/img/ouro-verde/tobogas-criancas-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-criancas-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Crianças descendo toboáguas" loading="lazy" decoding="async" /><figcaption>Toboáguas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/familia-piscina-800.webp" srcset="../../assets/img/ouro-verde/familia-piscina-800.webp 800w, ../../assets/img/ouro-verde/familia-piscina-1600.webp 1600w, ../../assets/img/ouro-verde/familia-piscina-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Família sentada na piscina" loading="lazy" decoding="async" /><figcaption>Em família</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/fonte-800.webp" srcset="../../assets/img/ouro-verde/fonte-800.webp 800w, ../../assets/img/ouro-verde/fonte-1600.webp 1600w, ../../assets/img/ouro-verde/fonte-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="600" alt="Piscina com fonte central e coqueiros" loading="lazy" decoding="async" /><figcaption>Piscina com fonte</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/polvo-800.webp" srcset="../../assets/img/ouro-verde/polvo-800.webp 800w, ../../assets/img/ouro-verde/polvo-1600.webp 1600w, ../../assets/img/ouro-verde/polvo-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="600" alt="Escorregador em forma de polvo" loading="lazy" decoding="async" /><figcaption>Área infantil</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/piscina-lazer-800.webp" srcset="../../assets/img/ouro-verde/piscina-lazer-800.webp 800w, ../../assets/img/ouro-verde/piscina-lazer-1600.webp 1600w, ../../assets/img/ouro-verde/piscina-lazer-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Piscina com guarda-sóis coloridos" loading="lazy" decoding="async" /><figcaption>Piscinas</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/playground-800.webp" srcset="../../assets/img/ouro-verde/playground-800.webp 800w, ../../assets/img/ouro-verde/playground-1600.webp 1600w, ../../assets/img/ouro-verde/playground-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Playground com famílias à sombra" loading="lazy" decoding="async" /><figcaption>Playground</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/passeio-800.webp" srcset="../../assets/img/ouro-verde/passeio-800.webp 800w, ../../assets/img/ouro-verde/passeio-1600.webp 1600w, ../../assets/img/ouro-verde/passeio-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Passeio de madeira às margens do canal" loading="lazy" decoding="async" /><figcaption>Passeio</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/restaurante-800.webp" srcset="../../assets/img/ouro-verde/restaurante-800.webp 800w, ../../assets/img/ouro-verde/restaurante-1600.webp 1600w, ../../assets/img/ouro-verde/restaurante-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="447" alt="Famílias no restaurante com vista para o parque" loading="lazy" decoding="async" /><figcaption>Restaurante</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/bar-mexicano-800.webp" srcset="../../assets/img/ouro-verde/bar-mexicano-800.webp 800w, ../../assets/img/ouro-verde/bar-mexicano-1600.webp 1600w, ../../assets/img/ouro-verde/bar-mexicano-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="600" alt="Bar mexicano iluminado ao entardecer" loading="lazy" decoding="async" /><figcaption>Bar mexicano</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/tobogas-multi-800.webp" srcset="../../assets/img/ouro-verde/tobogas-multi-800.webp 800w, ../../assets/img/ouro-verde/tobogas-multi-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-multi-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="600" alt="Toboáguas paralelos coloridos" loading="lazy" decoding="async" /><figcaption>Multipista</figcaption></figure>
-            <figure class="gallery__item"><img src="../../assets/img/ouro-verde/coqueiros-800.webp" srcset="../../assets/img/ouro-verde/coqueiros-800.webp 800w, ../../assets/img/ouro-verde/coqueiros-1600.webp 1600w, ../../assets/img/ouro-verde/coqueiros-2400.webp 2400w" sizes="(max-width: 900px) 82vw, 105vh" width="800" height="600" alt="Piscina rasa entre coqueiros" loading="lazy" decoding="async" /><figcaption>Coqueiros</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/tobogas-criancas-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/tobogas-criancas-800.webp 800w, ../../assets/img/ouro-verde/tobogas-criancas-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-criancas-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Crianças descendo toboáguas" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/tobogas-criancas-800.webp" srcset="../../assets/img/ouro-verde/tobogas-criancas-800.webp 800w, ../../assets/img/ouro-verde/tobogas-criancas-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-criancas-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Crianças descendo toboáguas" loading="lazy" decoding="async" /></noscript><figcaption>Toboáguas</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/familia-piscina-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/familia-piscina-800.webp 800w, ../../assets/img/ouro-verde/familia-piscina-1600.webp 1600w, ../../assets/img/ouro-verde/familia-piscina-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Família sentada na piscina" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/familia-piscina-800.webp" srcset="../../assets/img/ouro-verde/familia-piscina-800.webp 800w, ../../assets/img/ouro-verde/familia-piscina-1600.webp 1600w, ../../assets/img/ouro-verde/familia-piscina-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Família sentada na piscina" loading="lazy" decoding="async" /></noscript><figcaption>Em família</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 600" data-lazy-src="../../assets/img/ouro-verde/fonte-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/fonte-800.webp 800w, ../../assets/img/ouro-verde/fonte-1600.webp 1600w, ../../assets/img/ouro-verde/fonte-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Piscina com fonte central e coqueiros" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/fonte-800.webp" srcset="../../assets/img/ouro-verde/fonte-800.webp 800w, ../../assets/img/ouro-verde/fonte-1600.webp 1600w, ../../assets/img/ouro-verde/fonte-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Piscina com fonte central e coqueiros" loading="lazy" decoding="async" /></noscript><figcaption>Piscina com fonte</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 600" data-lazy-src="../../assets/img/ouro-verde/polvo-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/polvo-800.webp 800w, ../../assets/img/ouro-verde/polvo-1600.webp 1600w, ../../assets/img/ouro-verde/polvo-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Escorregador em forma de polvo" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/polvo-800.webp" srcset="../../assets/img/ouro-verde/polvo-800.webp 800w, ../../assets/img/ouro-verde/polvo-1600.webp 1600w, ../../assets/img/ouro-verde/polvo-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Escorregador em forma de polvo" loading="lazy" decoding="async" /></noscript><figcaption>Área infantil</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/piscina-lazer-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/piscina-lazer-800.webp 800w, ../../assets/img/ouro-verde/piscina-lazer-1600.webp 1600w, ../../assets/img/ouro-verde/piscina-lazer-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Piscina com guarda-sóis coloridos" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/piscina-lazer-800.webp" srcset="../../assets/img/ouro-verde/piscina-lazer-800.webp 800w, ../../assets/img/ouro-verde/piscina-lazer-1600.webp 1600w, ../../assets/img/ouro-verde/piscina-lazer-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Piscina com guarda-sóis coloridos" loading="lazy" decoding="async" /></noscript><figcaption>Piscinas</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/playground-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/playground-800.webp 800w, ../../assets/img/ouro-verde/playground-1600.webp 1600w, ../../assets/img/ouro-verde/playground-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Playground com famílias à sombra" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/playground-800.webp" srcset="../../assets/img/ouro-verde/playground-800.webp 800w, ../../assets/img/ouro-verde/playground-1600.webp 1600w, ../../assets/img/ouro-verde/playground-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Playground com famílias à sombra" loading="lazy" decoding="async" /></noscript><figcaption>Playground</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/passeio-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/passeio-800.webp 800w, ../../assets/img/ouro-verde/passeio-1600.webp 1600w, ../../assets/img/ouro-verde/passeio-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Passeio de madeira às margens do canal" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/passeio-800.webp" srcset="../../assets/img/ouro-verde/passeio-800.webp 800w, ../../assets/img/ouro-verde/passeio-1600.webp 1600w, ../../assets/img/ouro-verde/passeio-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Passeio de madeira às margens do canal" loading="lazy" decoding="async" /></noscript><figcaption>Passeio</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 447" data-lazy-src="../../assets/img/ouro-verde/restaurante-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/restaurante-800.webp 800w, ../../assets/img/ouro-verde/restaurante-1600.webp 1600w, ../../assets/img/ouro-verde/restaurante-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Famílias no restaurante com vista para o parque" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/restaurante-800.webp" srcset="../../assets/img/ouro-verde/restaurante-800.webp 800w, ../../assets/img/ouro-verde/restaurante-1600.webp 1600w, ../../assets/img/ouro-verde/restaurante-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="447" alt="Famílias no restaurante com vista para o parque" loading="lazy" decoding="async" /></noscript><figcaption>Restaurante</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 600" data-lazy-src="../../assets/img/ouro-verde/bar-mexicano-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/bar-mexicano-800.webp 800w, ../../assets/img/ouro-verde/bar-mexicano-1600.webp 1600w, ../../assets/img/ouro-verde/bar-mexicano-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Bar mexicano iluminado ao entardecer" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/bar-mexicano-800.webp" srcset="../../assets/img/ouro-verde/bar-mexicano-800.webp 800w, ../../assets/img/ouro-verde/bar-mexicano-1600.webp 1600w, ../../assets/img/ouro-verde/bar-mexicano-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Bar mexicano iluminado ao entardecer" loading="lazy" decoding="async" /></noscript><figcaption>Bar mexicano</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 600" data-lazy-src="../../assets/img/ouro-verde/tobogas-multi-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/tobogas-multi-800.webp 800w, ../../assets/img/ouro-verde/tobogas-multi-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-multi-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Toboáguas paralelos coloridos" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/tobogas-multi-800.webp" srcset="../../assets/img/ouro-verde/tobogas-multi-800.webp 800w, ../../assets/img/ouro-verde/tobogas-multi-1600.webp 1600w, ../../assets/img/ouro-verde/tobogas-multi-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Toboáguas paralelos coloridos" loading="lazy" decoding="async" /></noscript><figcaption>Multipista</figcaption></figure>
+            <figure class="gallery__item"><img style="aspect-ratio: 800 / 600" data-lazy-src="../../assets/img/ouro-verde/coqueiros-800.webp" data-lazy-srcset="../../assets/img/ouro-verde/coqueiros-800.webp 800w, ../../assets/img/ouro-verde/coqueiros-1600.webp 1600w, ../../assets/img/ouro-verde/coqueiros-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Piscina rasa entre coqueiros" loading="lazy" decoding="async" /><noscript><img src="../../assets/img/ouro-verde/coqueiros-800.webp" srcset="../../assets/img/ouro-verde/coqueiros-800.webp 800w, ../../assets/img/ouro-verde/coqueiros-1600.webp 1600w, ../../assets/img/ouro-verde/coqueiros-2400.webp 2400w" sizes="(max-width: 900px) 88vw, 105vh" width="800" height="600" alt="Piscina rasa entre coqueiros" loading="lazy" decoding="async" /></noscript><figcaption>Coqueiros</figcaption></figure>
           </div>
+          <div class="gallery__progress container" aria-hidden="true"><span data-gallery-progress></span></div>
         </div>
       </section>
 
       <!-- Um dia no clube (cena fixada) -->
-      <section class="day" data-day aria-label="Um dia no Ouro Verde">
-        <div class="day__media">
-          <video
-            data-video
-            data-src="../../assets/video/ouro-verde.mp4"
-            data-src-mobile="../../assets/video/ouro-verde-mobile.mp4"
-            poster="../../assets/video/ouro-verde.jpg"
-            muted
-            loop
-            playsinline
-            preload="none"
-          ></video>
+      <section class="day" data-day data-defer aria-label="Um dia no Ouro Verde">
+        <div class="day__media" data-day-media>
+          <picture class="media-poster">
+            <source media="(max-width: 767px)" data-lazy-srcset="../../assets/video/ouro-verde-mobile.webp" />
+            <img data-lazy-src="../../assets/video/ouro-verde.webp" alt="" width="1600" height="900" decoding="async" />
+          </picture>
+          <video data-video data-src="../../assets/video/ouro-verde.mp4" data-src-mobile="../../assets/video/ouro-verde-mobile.mp4" muted loop playsinline preload="none"></video>
         </div>
+        <!-- a luz do dia: azul de manhã, clara à tarde, dourada no fim da tarde -->
+        <div class="day__tint" data-day-tint></div>
         <div class="day__shade"></div>
         <div class="container day__content">
           <div>
             <p class="eyebrow eyebrow--orange">Um dia no Ouro Verde</p>
+            <!-- o sol percorre o arco conforme a rolagem -->
+            <svg class="day__sun" viewBox="0 0 240 130" aria-hidden="true">
+              <path class="day__arc" d="M14 120 A106 106 0 0 1 226 120" />
+              <path class="day__arc day__arc--on" data-day-arc d="M14 120 A106 106 0 0 1 226 120" />
+              <line class="day__horizon" x1="0" y1="120" x2="240" y2="120" />
+              <circle class="day__sun-glow" data-day-glow r="22" cx="14" cy="120" />
+              <circle class="day__sun-dot" data-day-dot r="8" cx="14" cy="120" />
+            </svg>
             <ul class="day__clock" data-day-clock>
                 <li>Manhã</li>
                 <li>Tarde</li>
@@ -234,6 +243,7 @@
               </div>
           </div>
         </div>
+        <svg class="wave wave--foam" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Produto -->
@@ -260,6 +270,7 @@
             </li>
           </ol>
         </div>
+        <svg class="wave wave--deep" data-wave viewBox="0 0 1440 120" preserveAspectRatio="none" aria-hidden="true"><path class="wave__back" /><path /></svg>
       </section>
 
       <!-- Onde fica -->
@@ -289,7 +300,8 @@
 
       <!-- Próximo empreendimento -->
       <a class="next" href="../clube-aguas-quentes-palmeiras/" style="--next-accent: #f0a24a" data-cursor="Próximo">
-        <video data-video data-hover-video data-src="../../assets/video/palmeiras-mobile.mp4" poster="../../assets/video/palmeiras.jpg" muted loop playsinline preload="none"></video>
+        <img class="next__poster" src="../../assets/video/palmeiras.webp" alt="" width="1600" height="900" loading="lazy" decoding="async" />
+        <video data-video data-hover-video data-src="../../assets/video/palmeiras-mobile.mp4" muted loop playsinline preload="none"></video>
         <div class="container next__content">
           <p class="eyebrow eyebrow--light">Próximo empreendimento · Minas Gerais · Uberlândia</p>
           <p class="next__name">Clube Águas Quentes <span>Palmeiras</span></p>
@@ -298,7 +310,7 @@
       </a>
     </main>
 
-    <footer class="footer">
+    <footer class="footer" data-defer>
       <div class="container footer__top">
         <a class="brand brand--light" href="../../" aria-label="Hollanda Parques & Resorts">
           <img class="footer__logo" src="../../assets/img/brand/hollanda-logo-white.png" alt="Hollanda Comercializadora" width="720" height="389" loading="lazy" decoding="async" />
