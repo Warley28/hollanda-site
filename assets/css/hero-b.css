@@ -4,8 +4,7 @@
    são animadas pelo Motion: não recebem transform no CSS. A entrada da capa é só CSS (abaixo). */
 .hb {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   min-height: 600px;
   overflow: hidden;
   background: #020b1c;
@@ -17,7 +16,7 @@
    movimento" a capa é uma tela só */
 @media (prefers-reduced-motion: no-preference) {
   html.js .hb-track {
-    height: calc(100svh + 620vh);
+    height: calc(var(--vh) * 720);
     /* no iPhone, quando a barra de endereço some a tela cresce além da capa (100svh): a faixa que
        aparece embaixo fica escura, da cor da capa */
     background: #020b1c;
@@ -31,7 +30,7 @@
    rolagem em proporção ao trilho, então as paradas continuam nos mesmos pontos da história */
 @media (prefers-reduced-motion: no-preference) and (hover: none) and (pointer: coarse) {
   html.js .hb-track {
-    height: calc(100svh + 410vh);
+    height: calc(var(--vh) * 510);
   }
 }
 .hb__gl,
@@ -222,7 +221,7 @@ html:not(.js) .hb__fallback {
   position: absolute;
   left: 0;
   right: 0;
-  top: calc(var(--nav-h) + 3vh);
+  top: calc(var(--nav-h) + calc(var(--vh) * 3));
   text-align: center;
 }
 .hb__end-head .eyebrow {
@@ -254,7 +253,7 @@ html:not(.js) .hb__fallback {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 13vh;
+  bottom: calc(var(--vh) * 13);
   padding: 0 24px;
   text-align: center;
 }
@@ -316,7 +315,7 @@ html:not(.js) .hb__fallback {
   }
   .hb__beat {
     top: auto;
-    bottom: 15vh;
+    bottom: calc(var(--vh) * 15);
     right: var(--gutter);
     max-width: none;
     transform: none;

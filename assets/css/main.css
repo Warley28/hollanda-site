@@ -33,6 +33,12 @@
 }
 
 :root {
+  /* altura da tela usada no layout (no lugar de vh/svh): medida uma vez ao abrir a página (script no
+     <head>) e refeita só quando a largura muda. No celular as barras do navegador aparecem e somem ao
+     rolar; se a altura acompanhasse, a página inteira mudava de comprimento no meio da rolagem e as
+     seções fixadas ficavam no lugar errado (o Mergulho por cima das portas). Sem JS vale 1svh */
+  --vh: 1vh;
+  --vh: 1svh;
   --abyss: #020f26;
   --deep: #041a3a;
   --navy: #0a2550;
@@ -631,8 +637,7 @@ html:not(.js) .loader,
 .hero {
   --hero-ink: var(--deep);
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   min-height: 640px;
   color: var(--hero-ink);
   overflow: hidden;
@@ -699,7 +704,7 @@ html:not(.js) .loader,
 .hero__content {
   position: relative;
   z-index: 2;
-  padding-bottom: clamp(28px, 6vh, 70px);
+  padding-bottom: clamp(28px, calc(var(--vh) * 6), 70px);
 }
 .hero__content .eyebrow {
   margin-bottom: 26px;
@@ -860,7 +865,7 @@ html:not(.js) .loader,
 .paths__doors {
   display: flex;
   align-items: stretch;
-  height: clamp(460px, 72vh, 720px);
+  height: clamp(460px, calc(var(--vh) * 72), 720px);
   padding-inline: var(--gutter);
   max-width: calc(var(--max) + 2 * var(--gutter));
   margin-inline: auto;
@@ -999,7 +1004,7 @@ html:not(.js) .loader,
     height: auto;
   }
   .door {
-    min-height: clamp(380px, 62vh, 520px);
+    min-height: clamp(380px, calc(var(--vh) * 62), 520px);
   }
   .door__body {
     width: auto;
@@ -1216,7 +1221,7 @@ html:not(.js) .loader,
   position: absolute;
   inset: auto 0 0 0;
   z-index: 4;
-  padding-bottom: clamp(56px, 10vh, 110px);
+  padding-bottom: clamp(56px, calc(var(--vh) * 10), 110px);
   color: #fff;
   opacity: 0;
   visibility: hidden;
@@ -1236,7 +1241,7 @@ html:not(.js) .loader,
 }
 .hero__clubs {
   list-style: none;
-  margin: clamp(26px, 4vh, 40px) 0 0;
+  margin: clamp(26px, calc(var(--vh) * 4), 40px) 0 0;
   padding: 0;
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1305,12 +1310,12 @@ html:not(.js) .loader,
   }
   .hero__beats {
     align-items: end;
-    padding-bottom: 16vh;
+    padding-bottom: calc(var(--vh) * 16);
   }
   /* a 1ª frase (azul-marinho) fica no alto, sobre o creme, longe da coroa d'água */
   .hero__beat--ink {
     align-self: start;
-    margin-top: calc(var(--nav-h) + 5vh);
+    margin-top: calc(var(--nav-h) + calc(var(--vh) * 5));
   }
   .hero__beat {
     font-size: min(11vw, 6.4rem);
@@ -1324,7 +1329,7 @@ html:not(.js) .loader,
     display: none;
   }
   .hero__content {
-    padding-bottom: max(36px, 6svh);
+    padding-bottom: max(36px, calc(var(--vh) * 6));
   }
 }
 @media (max-width: 767px) {
@@ -1344,8 +1349,7 @@ html:not(.js) .loader,
 /* ---------- mergulho (a câmera entra na piscina até o azul dos serviços) ---------- */
 .dive {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   background: var(--deep);
   color: #fff;
 }
@@ -1430,7 +1434,7 @@ html:not(.js) .loader,
   }
   .dive__captions {
     align-items: end;
-    padding-bottom: 14vh;
+    padding-bottom: calc(var(--vh) * 14);
   }
   .dive__caption {
     font-size: min(10.5vw, 6.2rem);
@@ -1463,8 +1467,7 @@ html:not(.js) .loader,
 .services__pin {
   position: relative;
   z-index: 2;
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: calc(var(--vh) * 100);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1488,7 +1491,7 @@ html:not(.js) .loader,
 .services__track {
   display: flex;
   gap: clamp(14px, 1.6vw, 22px);
-  margin-top: clamp(36px, 5vh, 64px);
+  margin-top: clamp(36px, calc(var(--vh) * 5), 64px);
   padding-inline: var(--gutter);
   width: max-content;
   will-change: transform;
@@ -1502,7 +1505,7 @@ html:not(.js) .loader,
   position: relative;
   flex: none;
   width: clamp(290px, 27vw, 400px);
-  min-height: clamp(330px, 44vh, 430px);
+  min-height: clamp(330px, calc(var(--vh) * 44), 430px);
   padding: clamp(24px, 2.4vw, 36px);
   border-radius: var(--radius);
   background: rgba(255, 255, 255, 0.05);
@@ -1562,7 +1565,7 @@ html:not(.js) .loader,
   display: flex;
   align-items: center;
   gap: 24px;
-  margin-top: clamp(30px, 4vh, 50px);
+  margin-top: clamp(30px, calc(var(--vh) * 4), 50px);
 }
 .services__progress {
   flex: 1;
@@ -1622,8 +1625,7 @@ html:not(.js) .loader,
 .club-panel {
   position: sticky;
   top: 0;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   padding: 10px;
 }
 .club-panel__inner {
@@ -1810,12 +1812,11 @@ html:not(.js) .loader,
   white-space: nowrap;
 }
 .etapas--motion .et {
-  --u: min(1vw, 1.7778vh);
+  --u: min(1vw, calc(var(--vh) * 1.7778));
   --navy-0: #03193f;
   display: block;
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   overflow: hidden;
   contain: layout paint;
   background: var(--navy-0);
@@ -2391,7 +2392,7 @@ html:not(.js) .loader,
 /* tela de pé (celular e o vídeo 9:16): mesmo tempo, outro layout */
 @media (max-aspect-ratio: 1/1) {
   .etapas--motion .et {
-    --u: min(1.7778vw, 1vh);
+    --u: min(1.7778vw, calc(var(--vh) * 1));
   }
   .et-fig--1 {
     right: calc(var(--u) * -4);
@@ -3147,8 +3148,7 @@ html:not(.js) .island,
    ========================================================================== */
 .club-hero {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   min-height: 620px;
   color: #fff;
   overflow: hidden;
@@ -3186,7 +3186,7 @@ html:not(.js) .island,
   display: flex;
   flex-direction: column;
   justify-content: flex-end;
-  padding-bottom: clamp(30px, 6vh, 70px);
+  padding-bottom: clamp(30px, calc(var(--vh) * 6), 70px);
 }
 .crumbs {
   display: flex;
@@ -3236,19 +3236,19 @@ html:not(.js) .island,
    "Início / Empreendimentos" para baixo da navegação) */
 @media (min-width: 901px) and (max-height: 820px) {
   .club-hero__name {
-    font-size: min(11.5vw, 15vh);
+    font-size: min(11.5vw, calc(var(--vh) * 15));
   }
   .page-club--palmeiras .club-hero__name {
-    font-size: min(8vw, 12.5vh);
+    font-size: min(8vw, calc(var(--vh) * 12.5));
   }
   .club-hero__logo {
-    --logo-h: 11vh;
+    --logo-h: calc(var(--vh) * 11);
   }
   .club-hero__logo.club-logo--round {
-    --logo-h: 13vh;
+    --logo-h: calc(var(--vh) * 13);
   }
   .club-hero__logo.club-logo--sticker {
-    --logo-h: 8.5vh;
+    --logo-h: calc(var(--vh) * 8.5);
   }
 }
 .club-hero__name span {
@@ -3265,7 +3265,7 @@ html:not(.js) .island,
   justify-content: space-between;
   align-items: flex-end;
   gap: 30px;
-  margin-top: clamp(24px, 4vh, 44px);
+  margin-top: clamp(24px, calc(var(--vh) * 4), 44px);
   padding-top: 22px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -3413,8 +3413,7 @@ html:not(.js) .island,
 /* um dia no clube (pinned) */
 .day {
   position: relative;
-  height: 100vh;
-  height: 100svh;
+  height: calc(var(--vh) * 100);
   color: #fff;
   background: var(--deep);
   overflow: hidden;
@@ -3623,7 +3622,7 @@ html:not(.js) .island,
 .next {
   position: relative;
   display: block;
-  height: 80vh;
+  height: calc(var(--vh) * 80);
   min-height: 480px;
   color: #fff;
   overflow: hidden;
@@ -3824,8 +3823,7 @@ html:not(.js) .island,
   overflow: hidden;
 }
 .gallery__pin {
-  min-height: 100vh;
-  min-height: 100svh;
+  min-height: calc(var(--vh) * 100);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -3836,7 +3834,7 @@ html:not(.js) .island,
   flex-direction: column;
   align-items: flex-start;
   gap: 14px;
-  margin-bottom: clamp(26px, 4vh, 48px);
+  margin-bottom: clamp(26px, calc(var(--vh) * 4), 48px);
 }
 .gallery__head .h2 {
   margin-top: 18px;
@@ -3856,7 +3854,7 @@ html:not(.js) .island,
 .gallery__item {
   margin: 0;
   flex: none;
-  height: clamp(300px, 58vh, 620px);
+  height: clamp(300px, calc(var(--vh) * 58), 620px);
   border-radius: var(--radius);
   overflow: hidden;
   position: relative;
@@ -4145,10 +4143,8 @@ html:not(.js) .hero__canvas {
     position: sticky;
     top: 0;
     display: block;
-    height: 100vh;
-    height: 100svh;
-    margin-bottom: -100vh;
-    margin-bottom: -100svh;
+    height: calc(var(--vh) * 100);
+    margin-bottom: calc(var(--vh) * -100);
   }
   .bento {
     grid-auto-rows: minmax(150px, auto);
@@ -4201,7 +4197,7 @@ img[data-lazy-src] {
   filter: brightness(0.78) saturate(1.05);
 }
 .club-hero__content {
-  padding-bottom: calc(clamp(30px, 6vh, 70px) + 30px);
+  padding-bottom: calc(clamp(30px, calc(var(--vh) * 6), 70px) + 30px);
 }
 /* a foto da capa começa fechada e se abre como uma bolha (app.js); se o JS não rodar, abre em 3,5 s */
 @media (prefers-reduced-motion: no-preference) {
@@ -4332,7 +4328,7 @@ img[data-lazy-src] {
 .gallery__progress {
   position: relative;
   height: 2px;
-  margin-top: clamp(22px, 3.4vh, 38px);
+  margin-top: clamp(22px, calc(var(--vh) * 3.4), 38px);
 }
 .gallery__progress::before,
 .gallery__progress span {
@@ -4379,7 +4375,7 @@ img[data-lazy-src] {
   .day__content {
     align-content: end;
     gap: 18px;
-    padding-bottom: 12vh;
+    padding-bottom: calc(var(--vh) * 12);
   }
   .day__sun {
     width: 150px;
