@@ -17,6 +17,6 @@
   grid-template-areas: "eyebrow" "title" "note";
   gap: 18px;
 }
-.clubs__intro > :last-child {
+.clubs__intro .clubs__note {
   max-width: 60ch;
 }

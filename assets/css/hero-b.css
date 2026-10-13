@@ -1,7 +1,7 @@
 /* ---------- CAPA "opção B": A Gota ----------
    Gota d'água em 3D desenhada ao vivo num <canvas> (assets/js/hero-b.js). Fundo azul profundo;
-   os textos ficam à esquerda (no celular, embaixo da gota). Partes animadas pelo Motion
-   ([data-hb-part], .hw > span) não recebem transform no CSS: o Motion escreve o transform delas. */
+   os textos ficam à esquerda (no celular, embaixo da gota). As frases das paradas ([data-hb-part])
+   são animadas pelo Motion: não recebem transform no CSS. A entrada da capa é só CSS (abaixo). */
 .hb {
   position: relative;
   height: 100vh;
@@ -11,24 +11,45 @@
   background: #020b1c;
   color: #fff;
 }
+/* trilho: a capa fica presa (sticky) enquanto a história rola por 6,2 telas (TOTAL em hero-b.js).
+   Antes era o pin do ScrollTrigger, que tirava a seção do lugar para envolvê-la: o Chrome descartava a
+   1ª pintura do título como "maior elemento" (e a nota do PageSpeed caía). Sem JS ou com "reduzir
+   movimento" a capa é uma tela só */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .hb-track {
+    height: calc(100svh + 620vh);
+  }
+  html.js .hb-track > .hb {
+    position: sticky;
+    top: 0;
+  }
+}
 .hb__gl,
-.hb__fallback,
-.hb__fallback img {
+.hb__fallback {
   position: absolute;
   inset: 0;
   display: block;
   width: 100%;
   height: 100%;
 }
+/* foto pronta da capa: só sem placa de vídeo (html.nogl vem do teste no <head>; .hb--nogl, do
+   hero-b.js). Como fundo em CSS ela nem é baixada quando a água ao vivo funciona */
 .hb__fallback {
   display: none;
-}
-.hb__fallback img {
-  object-fit: cover;
+  background: #020b1c no-repeat center / cover;
 }
 .hb--nogl .hb__fallback,
+html.nogl .hb__fallback,
 html:not(.js) .hb__fallback {
   display: block;
+  background-image: url("../img/gota/still.webp");
+}
+@media (max-aspect-ratio: 1/1) {
+  .hb--nogl .hb__fallback,
+  html.nogl .hb__fallback,
+  html:not(.js) .hb__fallback {
+    background-image: url("../img/gota/still-m.webp");
+  }
 }
 
 /* capa */
@@ -69,6 +90,28 @@ html:not(.js) .hb__fallback {
   margin-top: 26px;
   font-size: clamp(1rem, 1.2vw, 1.12rem);
   color: rgba(255, 255, 255, 0.72);
+}
+/* entrada da capa só com CSS: o título fica parado e inteiro desde o 1º quadro (é o maior elemento da
+   tela: o Chrome só o conta como pintado quando uma animação dele começa, e isso atrasava a nota do
+   PageSpeed); rótulo, texto e botões sobem logo atrás. "backwards" só segura o estado inicial durante
+   o atraso: depois, nada fica preso no elemento */
+@media (prefers-reduced-motion: no-preference) {
+  .hb__cover [data-hb-intro] {
+    animation: hbIntro 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 0.1s;
+  }
+  .hb__cover .hb__lead[data-hb-intro] {
+    animation-delay: 0.45s;
+  }
+  .hb__cover .hb__actions[data-hb-intro] {
+    animation-delay: 0.55s;
+  }
+}
+@keyframes hbIntro {
+  from {
+    transform: translateY(18px);
+    opacity: 0;
+  }
 }
 .hb__actions {
   display: flex;
@@ -301,6 +344,12 @@ html:not(.js) .hb__fallback {
   }
   .hb__club i {
     margin-top: 8px;
+  }
+}
+/* celular ("meio a meio"): o texto fica sobre a água azul; laranja mais claro para ler bem */
+@media (max-aspect-ratio: 1/1) {
+  .hb__cover .eyebrow--orange {
+    color: #ffc27a;
   }
 }
 @media (max-aspect-ratio: 1/1) and (max-width: 600px) {

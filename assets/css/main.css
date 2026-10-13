@@ -4,6 +4,34 @@
    Tipos: Baloo 2 (títulos) + Yellowtail (destaques) + Nunito (texto)
    ========================================================================== */
 
+/* fontes servidas pelo próprio site (antes vinham do Google Fonts: duas conexões a mais antes da 1ª
+   pintura). Baloo 2 e Nunito são variáveis: um arquivo cobre todos os pesos. Só os caracteres do
+   português (subconjunto "latin" do Google). As duas principais são pré-carregadas no <head>. */
+@font-face {
+  font-family: "Baloo 2";
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url("../fonts/baloo2-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Nunito";
+  font-style: normal;
+  font-weight: 200 1000;
+  font-display: swap;
+  src: url("../fonts/nunito-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Yellowtail";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("../fonts/yellowtail-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   --abyss: #020f26;
   --deep: #041a3a;
@@ -230,6 +258,20 @@ em.serif {
   margin-top: -0.16em;
   padding-bottom: 0.62em;
   margin-bottom: -0.62em;
+}
+/* o título dividido ocupa exatamente o mesmo espaço que o texto normal: as folgas ficam dentro dele
+   (flow-root) e, como margens negativas de irmãos não somam (fica só a maior), a linha seguinte desconta
+   as duas. Sem isso a página encolhia ao desfazer a divisão e a rolagem dava um pulo */
+[data-split],
+.club-hero__name {
+  display: flow-root;
+}
+.split-line-mask + .split-line-mask {
+  margin-top: -0.78em;
+}
+/* o Safari deixa um pedaço vazio do <em> cursivo no fim da linha de cima: ele subia a altura da linha */
+.split-line em:empty {
+  display: none;
 }
 
 /* ---------- botões & links ---------- */
@@ -802,63 +844,178 @@ html:not(.js) .loader,
   background: var(--paper);
   padding: clamp(80px, 11vw, 160px) 0 clamp(40px, 6vw, 80px);
 }
-.paths__grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(14px, 1.6vw, 24px);
+.paths__head {
+  margin-bottom: clamp(30px, 4vw, 56px);
 }
-.path-card {
+.paths__head .h2 {
+  max-width: 14ch;
+}
+.paths__intro {
+  margin-top: 18px;
+  max-width: 52ch;
+  color: var(--ink-2);
+  font-size: 1.05rem;
+}
+/* as duas portas: no computador, a que está sob o mouse (ou com foco) se abre e a outra se recolhe */
+.paths__doors {
+  display: flex;
+  align-items: stretch;
+  height: clamp(460px, 72vh, 720px);
+  padding-inline: var(--gutter);
+  max-width: calc(var(--max) + 2 * var(--gutter));
+  margin-inline: auto;
+}
+.door {
   position: relative;
-  min-height: clamp(380px, 38vw, 560px);
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: var(--navy);
-  color: #fff;
+  flex: 1 1 0;
+  min-width: 0;
   display: flex;
   align-items: flex-end;
+  overflow: hidden;
+  border-radius: var(--radius-lg);
+  background: var(--navy);
+  color: #fff;
   isolation: isolate;
+  transition: flex-grow 0.95s var(--ease);
 }
-.path-card__video {
+.door__media,
+.door__img,
+.door__video {
   position: absolute;
   inset: 0;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  z-index: -2;
-  transform: scale(1.08);
-  transition: transform 1.4s var(--ease), filter 1s var(--ease);
-  filter: saturate(0.85) brightness(0.8);
 }
-.path-card::after {
+.door__media {
+  z-index: -2;
+}
+.door__img,
+.door__video {
+  object-fit: cover;
+  transform: scale(1.08);
+  transition: transform 1.4s var(--ease), opacity 0.8s var(--ease), filter 0.8s var(--ease);
+  filter: saturate(0.95) brightness(0.86);
+}
+.door__video {
+  opacity: 0;
+}
+.door::after {
   content: "";
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(0deg, rgba(3, 18, 44, 0.94) 0%, rgba(3, 18, 44, 0.62) 42%, rgba(3, 18, 44, 0.12) 78%);
-  transition: opacity 0.8s var(--ease);
+  background: linear-gradient(0deg, rgba(3, 18, 44, 0.94) 0%, rgba(3, 18, 44, 0.55) 45%, rgba(3, 18, 44, 0.1) 80%);
+  transition: background-color 0.8s var(--ease);
 }
-.path-card:hover .path-card__video {
-  transform: scale(1);
-  filter: saturate(1.05) brightness(0.95);
+.door__body {
+  display: block;
+  /* largura fixa: o texto não se rearruma enquanto a porta abre ou fecha */
+  width: min(520px, 38vw);
+  padding: clamp(26px, 3.2vw, 50px);
 }
-.path-card__body {
-  padding: clamp(26px, 3.4vw, 52px);
-  max-width: 560px;
+.door__who {
+  display: block;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.82);
 }
-.path-card__body .eyebrow {
+.door__title {
+  display: block;
+  margin: 12px 0 14px;
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 3.3rem);
+  font-weight: 700;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+.door__title em {
+  display: inline-block;
+  padding-bottom: 0.08em;
   color: var(--orange);
 }
-.path-card__title {
-  font-size: clamp(2rem, 3.6vw, 3.4rem);
-  line-height: 1.02;
-  letter-spacing: -0.04em;
-  font-weight: 500;
-  margin: 18px 0 14px;
+.door__text {
+  display: block;
+  max-width: 400px;
+  margin-bottom: 24px;
+  color: rgba(255, 255, 255, 0.78);
+  transition: opacity 0.5s var(--ease), transform 0.6s var(--ease);
 }
-.path-card__body p:not(.eyebrow) {
-  color: rgba(255, 255, 255, 0.75);
-  margin-bottom: 26px;
-  max-width: 420px;
+/* o "ou" fica na emenda entre as portas e anda com ela */
+.paths__or {
+  position: relative;
+  flex: 0 0 clamp(10px, 1.2vw, 18px);
+  z-index: 2;
+}
+.paths__or span {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 64px;
+  height: 64px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--orange-ink);
+  font-family: var(--font-script);
+  font-size: 1.9rem;
+  line-height: 1;
+  padding-bottom: 6px;
+  box-shadow: 0 10px 30px rgba(3, 18, 44, 0.22);
+}
+@media (hover: hover) and (min-width: 901px) {
+  .paths__doors:hover .door,
+  .paths__doors:focus-within .door {
+    flex-grow: 0.7;
+  }
+  .paths__doors .door:hover,
+  .paths__doors .door:focus-visible {
+    flex-grow: 1.5;
+  }
+  .door:hover .door__img,
+  .door:hover .door__video,
+  .door:focus-visible .door__img {
+    transform: scale(1);
+    filter: saturate(1.05) brightness(0.95);
+  }
+  .door:hover .door__video {
+    opacity: 1;
+  }
+  /* a porta recolhida guarda só o título */
+  .paths__doors:hover .door:not(:hover) .door__text,
+  .paths__doors:hover .door:not(:hover) .link-arrow {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  .paths__doors:hover .door:not(:hover)::after {
+    background-color: rgba(3, 18, 44, 0.35);
+  }
+}
+@media (max-width: 900px) {
+  .paths__doors {
+    flex-direction: column;
+    height: auto;
+  }
+  .door {
+    min-height: clamp(380px, 62vh, 520px);
+  }
+  .door__body {
+    width: auto;
+  }
+  .paths__or {
+    flex-basis: 12px;
+  }
+  .paths__or span {
+    width: 54px;
+    height: 54px;
+    font-size: 1.6rem;
+  }
+  /* no celular o vídeo toca quando a porta aparece (não há mouse) */
+  .door__video {
+    opacity: 1;
+  }
 }
 
 /* ---------- manifesto ---------- */
@@ -875,35 +1032,125 @@ html:not(.js) .loader,
 .manifesto__statement .word {
   display: inline-block;
 }
-.manifesto__cols {
+/* o que a Hollanda faz, em três verbos: cada linha "enche de água" sob o mouse */
+.pillars {
   display: grid;
-  grid-template-columns: 1.1fr 1fr;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
   gap: clamp(30px, 6vw, 110px);
+  align-items: start;
+  padding-top: clamp(30px, 4vw, 56px);
+}
+/* o título acompanha a lista enquanto ela passa (fica preso no topo) */
+.pillars__title {
+  position: sticky;
+  top: calc(var(--nav-h) + 36px);
+  max-width: 13ch;
+}
+.pillars__list {
   border-top: 1px solid var(--line-l);
-  padding-top: clamp(30px, 4vw, 54px);
 }
-.manifesto__lead {
-  font-size: clamp(1.3rem, 2vw, 1.85rem);
-  line-height: 1.3;
-  letter-spacing: -0.02em;
-  font-weight: 500;
+.pillar {
+  --water: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 16' preserveAspectRatio='none'%3E%3Cpath d='M0 8Q30 0 60 8T120 8T180 8T240 8V16H0Z'/%3E%3C/svg%3E");
+  position: relative;
+  display: grid;
+  gap: 10px;
+  padding: clamp(26px, 2.8vw, 38px) 0 clamp(24px, 2.6vw, 34px);
+  overflow: hidden;
+  isolation: isolate;
+  border-bottom: 1px solid var(--line-l);
 }
-.manifesto__text p {
+/* a água: corpo com a borda de cima em onda (máscara), sobe sob o mouse e a onda corre */
+.pillar::before {
+  content: "";
+  position: absolute;
+  inset: 0; /* a onda fica nos 16px de cima, dentro da linha (a linha corta o que sai dela) */
+  z-index: -1;
+  background: linear-gradient(180deg, #2fb4d6 0%, #0f6f9c 60%, var(--deep) 100%);
+  -webkit-mask: var(--water) 0 0 / 240px 16px repeat-x, linear-gradient(#000, #000) 0 15px / 100% 100% no-repeat;
+  mask: var(--water) 0 0 / 240px 16px repeat-x, linear-gradient(#000, #000) 0 15px / 100% 100% no-repeat;
+  transform: translateY(101%);
+  transition: transform 0.85s var(--ease);
+}
+.pillar__mask {
+  display: block;
+  overflow: hidden;
+  padding: 0.06em 0 0.1em;
+}
+.pillar__verb {
+  display: inline-block;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 4.4vw, 4.4rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  color: var(--deep);
+  transition: color 0.5s var(--ease), transform 0.8s var(--ease);
+}
+.pillar__verb em {
+  font-style: normal;
+  color: var(--orange);
+}
+.pillar__line {
+  display: block;
+  max-width: 42ch;
+  font-size: 1.05rem;
+  line-height: 1.55;
   color: var(--ink-2);
-  margin-bottom: 18px;
+  transition: color 0.5s var(--ease);
 }
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 26px;
+@media (hover: hover) {
+  .pillar:hover::before {
+    transform: translateY(0);
+    animation: pillarWave 2.4s linear infinite;
+  }
+  .pillar:hover .pillar__verb {
+    color: #fff;
+    transform: translateX(22px);
+  }
+  .pillar:hover .pillar__line {
+    color: rgba(255, 255, 255, 0.86);
+    transform: translateX(22px);
+  }
 }
-.tags li {
-  padding: 8px 16px;
-  border: 1px solid var(--line-l);
-  border-radius: 999px;
-  font-size: 0.85rem;
-  font-weight: 500;
+@keyframes pillarWave {
+  to {
+    -webkit-mask-position: 240px 0, 0 15px;
+    mask-position: 240px 0, 0 15px;
+  }
+}
+/* entrada: cada verbo sobe por dentro da máscara, um depois do outro (app.js põe .is-in) */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .pillar__verb {
+    transform: translateY(110%);
+  }
+  html.js .pillar__line {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s var(--ease), transform 0.9s var(--ease), color 0.5s var(--ease);
+  }
+  html.js .pillar.is-in .pillar__verb {
+    transform: none;
+    transition: transform 1.2s var(--ease) calc(var(--i, 0) * 0.12s), color 0.5s var(--ease);
+  }
+  html.js .pillar.is-in .pillar__line {
+    opacity: 1;
+    transform: none;
+    transition-delay: calc(var(--i, 0) * 0.12s + 0.25s);
+  }
+  html.js .pillar.is-in:hover .pillar__verb,
+  html.js .pillar.is-in:hover .pillar__line {
+    transform: translateX(22px);
+    transition-delay: 0s;
+  }
+}
+@media (max-width: 900px) {
+  .pillars {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+  .pillars__title {
+    position: static;
+  }
 }
 .marquee {
   margin-top: clamp(60px, 9vw, 130px);
@@ -1364,6 +1611,11 @@ html:not(.js) .loader,
   color: rgba(255, 255, 255, 0.66);
   font-size: 0.95rem;
 }
+/* atalho para quem tem um empreendimento (a seção é das famílias, mas também é prova do trabalho) */
+.clubs__b2b {
+  grid-column: 1 / -1;
+  justify-self: start;
+}
 .club-stack {
   position: relative;
 }
@@ -1697,9 +1949,10 @@ html:not(.js) .loader,
 /* a menina saindo do toboágua (tools/make_etapa4.py, fonte assets-src/etapas/03-toboagua.png): o
    toboágua vai inteiro, à direita; a imagem é espelhada para ela "sair" na direção do texto */
 .et-fig--3 {
-  right: calc(var(--u) * 2);
-  bottom: calc(var(--u) * 5.5); /* acima do botão "Fale com a Hollanda" */
-  width: calc(var(--u) * 60);
+  /* grande, entrando pela direita: o fim do toboágua pode sair da tela; o respingo cai na piscina */
+  right: calc(var(--u) * -9);
+  bottom: calc(var(--u) * 4);
+  width: calc(var(--u) * 74);
   aspect-ratio: 2000 / 1126;
 }
 .et-fig--3 .et-img {
@@ -1727,6 +1980,10 @@ html:not(.js) .loader,
   bottom: calc(var(--u) * 3);
   height: calc(var(--u) * 41);
   aspect-ratio: 2000 / 1426;
+}
+.et-fig--3 .et-drops {
+  left: 22%;
+  top: 74%;
 }
 .et-fig--4 .et-drops {
   top: 70%;
@@ -1791,6 +2048,38 @@ html:not(.js) .loader,
 }
 
 /* faixa do toboágua */
+/* mergulho (03 → 04): água com a borda de cima em onda, bolhas subindo; cobre a tela e desce */
+.et-dip {
+  --water: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 24' preserveAspectRatio='none'%3E%3Cpath d='M0 12Q30 0 60 12T120 12T180 12T240 12V24H0Z'/%3E%3C/svg%3E");
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -6%;
+  height: 112%;
+  overflow: hidden;
+  background:
+    radial-gradient(60% 40% at 50% 8%, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0) 70%),
+    linear-gradient(180deg, #4cc9e2 0%, #1d97c2 30%, #0b5c8f 70%, #06325f 100%);
+  -webkit-mask: var(--water) 0 0 / calc(var(--u) * 30) calc(var(--u) * 3) repeat-x, linear-gradient(#000, #000) 0 calc(var(--u) * 2.9) / 100% 100% no-repeat;
+  mask: var(--water) 0 0 / calc(var(--u) * 30) calc(var(--u) * 3) repeat-x, linear-gradient(#000, #000) 0 calc(var(--u) * 2.9) / 100% 100% no-repeat;
+  visibility: hidden;
+  will-change: transform;
+}
+.et-dip i {
+  position: absolute;
+  bottom: 10%;
+  width: calc(var(--u) * 1.6);
+  height: calc(var(--u) * 1.6);
+  border-radius: 50%;
+  border: max(1px, calc(var(--u) * 0.14)) solid rgba(255, 255, 255, 0.7);
+  background: radial-gradient(circle at 35% 30%, rgba(255, 255, 255, 0.6), rgba(255, 255, 255, 0) 60%);
+}
+.et-dip i:nth-child(1) { left: 18%; }
+.et-dip i:nth-child(2) { left: 31%; width: calc(var(--u) * 0.9); height: calc(var(--u) * 0.9); }
+.et-dip i:nth-child(3) { left: 46%; width: calc(var(--u) * 2.4); height: calc(var(--u) * 2.4); }
+.et-dip i:nth-child(4) { left: 58%; width: calc(var(--u) * 1.1); height: calc(var(--u) * 1.1); }
+.et-dip i:nth-child(5) { left: 71%; }
+.et-dip i:nth-child(6) { left: 84%; width: calc(var(--u) * 0.8); height: calc(var(--u) * 0.8); }
 .et-band {
   position: absolute;
   top: -20%;
@@ -1915,6 +2204,9 @@ html:not(.js) .loader,
   top: 0;
   height: 135%;
   background: radial-gradient(70% 60% at 50% 40%, #f4a024 0%, var(--orange) 60%, #d67a07 100%);
+  --water: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 24' preserveAspectRatio='none'%3E%3Cpath d='M0 12Q30 0 60 12T120 12T180 12T240 12V24H0Z'/%3E%3C/svg%3E");
+  -webkit-mask: var(--water) 0 0 / calc(var(--u) * 34) calc(var(--u) * 3.4) repeat-x, linear-gradient(#000, #000) 0 calc(var(--u) * 3.3) / 100% 100% no-repeat;
+  mask: var(--water) 0 0 / calc(var(--u) * 34) calc(var(--u) * 3.4) repeat-x, linear-gradient(#000, #000) 0 calc(var(--u) * 3.3) / 100% 100% no-repeat;
   border-radius: 50% 50% 0 0 / calc(var(--u) * 22) calc(var(--u) * 22) 0 0;
   will-change: transform;
 }
@@ -2126,9 +2418,9 @@ html:not(.js) .loader,
     margin: -55% 0 0 -55%;
   }
   .et-fig--3 {
-    right: calc(var(--u) * 1);
-    bottom: calc(var(--u) * 10);
-    width: calc(var(--u) * 54);
+    right: calc(var(--u) * -12);
+    bottom: calc(var(--u) * 9);
+    width: calc(var(--u) * 74);
   }
   .et-fig--4 {
     right: auto;
@@ -2279,6 +2571,98 @@ html.et-render body {
 .faq__answer p {
   padding: 0 60px 28px 0;
   color: var(--ink-2);
+}
+/* as perguntas vêm em dois grupos: primeiro quem tem o empreendimento, depois quem quer um título */
+.faq__group {
+  margin: 0 0 10px;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--orange-ink);
+}
+.faq__item + .faq__group {
+  margin-top: clamp(40px, 5vw, 64px);
+}
+.faq__group + .faq__item {
+  border-top: 1px solid var(--line-l);
+}
+
+/* ---------- credibilidade (rascunho: só aparece com ?rascunho até chegarem os dados) ---------- */
+.proof {
+  background: var(--deep);
+  color: #fff;
+  padding: clamp(90px, 12vw, 170px) 0;
+}
+.proof__grid {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: clamp(40px, 6vw, 100px) clamp(40px, 7vw, 120px);
+  align-items: start;
+}
+.proof__lead {
+  margin: 22px 0 32px;
+  max-width: 36ch;
+  color: rgba(255, 255, 255, 0.72);
+}
+.proof__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin: 0;
+}
+.proof__stats > div {
+  padding: 26px 24px 30px 0;
+  border-top: 1px solid var(--line-d);
+}
+.proof__stats dt {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  line-height: 1;
+  color: var(--orange);
+}
+.proof__stats dd {
+  margin: 10px 0 0;
+  max-width: 24ch;
+  color: rgba(255, 255, 255, 0.78);
+}
+.proof__quote {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: clamp(32px, 4vw, 48px);
+  border-top: 1px solid var(--line-d);
+}
+.proof__quote blockquote {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.5rem, 2.6vw, 2.4rem);
+  line-height: 1.2;
+  max-width: 30ch;
+}
+.proof__quote figcaption {
+  margin-top: 18px;
+  color: rgba(255, 255, 255, 0.66);
+}
+.proof__team {
+  grid-column: 1 / -1;
+  color: rgba(255, 255, 255, 0.72);
+}
+/* o que ainda é placeholder fica tracejado, para ninguém confundir com dado real */
+.proof .is-todo {
+  outline: 1px dashed rgba(248, 201, 138, 0.6);
+  outline-offset: 6px;
+}
+.proof .is-todo small {
+  display: block;
+  margin-top: 4px;
+  color: var(--orange-2);
+}
+@media (max-width: 900px) {
+  .proof__grid {
+    grid-template-columns: 1fr;
+  }
+  .proof__stats {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* ---------- CTA ---------- */
@@ -2844,6 +3228,29 @@ html:not(.js) .island,
   font-weight: 500;
   /* sem will-change: o nome cresce ao rolar e ficaria borrado */
 }
+/* nome longo ("Clube Águas Quentes Palmeiras"): menor, para caber em 2 linhas junto com a logo */
+.page-club--palmeiras .club-hero__name {
+  font-size: clamp(3rem, 8vw, 9.4rem);
+}
+/* notebooks de tela baixa: logo e nome também acompanham a altura (senão empurram o caminho
+   "Início / Empreendimentos" para baixo da navegação) */
+@media (min-width: 901px) and (max-height: 820px) {
+  .club-hero__name {
+    font-size: min(11.5vw, 15vh);
+  }
+  .page-club--palmeiras .club-hero__name {
+    font-size: min(8vw, 12.5vh);
+  }
+  .club-hero__logo {
+    --logo-h: 11vh;
+  }
+  .club-hero__logo.club-logo--round {
+    --logo-h: 13vh;
+  }
+  .club-hero__logo.club-logo--sticker {
+    --logo-h: 8.5vh;
+  }
+}
 .club-hero__name span {
   display: block;
   font-family: var(--font-script);
@@ -2876,23 +3283,13 @@ html:not(.js) .island,
   max-width: 17ch;
   font-size: clamp(2.6rem, 6.4vw, 7rem);
 }
-.club-intro__cols {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: clamp(30px, 6vw, 110px);
-  margin-top: clamp(50px, 7vw, 100px);
-  padding-top: clamp(30px, 4vw, 50px);
-  border-top: 1px solid var(--line-l);
-}
-.club-intro__cols p {
-  color: var(--ink-2);
-}
-.club-intro__cols p:first-child {
-  color: var(--ink);
-  font-size: clamp(1.25rem, 1.9vw, 1.7rem);
-  line-height: 1.3;
-  letter-spacing: -0.02em;
+.club-intro__lead {
+  max-width: 34ch;
+  margin-top: clamp(28px, 4vw, 52px);
+  font-size: clamp(1.2rem, 1.8vw, 1.6rem);
+  line-height: 1.4;
   font-weight: 500;
+  color: var(--ink-2);
 }
 
 /* bento de destaques */
@@ -2900,20 +3297,12 @@ html:not(.js) .island,
   background: var(--paper);
   padding-bottom: clamp(90px, 12vw, 170px);
 }
-.highlights__head {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 30px;
+.highlights__title {
+  max-width: 14ch;
   margin-bottom: clamp(30px, 4vw, 56px);
 }
-.highlights__head .h2 {
-  margin-top: 20px;
-  max-width: 14ch;
-}
-.highlights__head > p {
-  max-width: 340px;
-  color: var(--ink-2);
+.highlights .note-illus {
+  margin-top: 22px;
 }
 .bento {
   display: grid;
@@ -3273,6 +3662,12 @@ html:not(.js) .island,
   font-weight: 500;
   margin-top: 22px;
 }
+.next__region {
+  margin-top: 16px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.78);
+}
 .next__name span {
   font-family: var(--font-script);
   font-style: normal;
@@ -3283,32 +3678,6 @@ html:not(.js) .island,
 /* ==========================================================================
    Fotos e logos reais (material do Drive)
    ========================================================================== */
-.path-card__img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -3;
-  transform: scale(1.06);
-  transition: transform 1.4s var(--ease), filter 1s var(--ease);
-  filter: saturate(0.95) brightness(0.85);
-}
-.path-card:hover .path-card__img {
-  transform: scale(1);
-}
-.path-card__video {
-  opacity: 0;
-  transition: opacity 0.8s var(--ease), transform 1.4s var(--ease), filter 1s var(--ease) !important;
-}
-.path-card:hover .path-card__video {
-  opacity: 1;
-}
-@media (hover: none) {
-  .path-card__video {
-    opacity: 1;
-  }
-}
 
 /* mosaico de fotos no manifesto */
 .mosaic {
@@ -3378,6 +3747,13 @@ html:not(.js) .island,
   height: var(--logo-h);
   width: auto;
 }
+/* logo com contorno branco próprio (adesivo): sem caixa, só uma sombra suave */
+.club-logo--sticker {
+  border-radius: 0;
+  overflow: visible;
+  box-shadow: none;
+  filter: drop-shadow(0 10px 26px rgba(3, 18, 44, 0.45));
+}
 .club-logo--round {
   border-radius: 50%;
   overflow: visible;
@@ -3394,6 +3770,10 @@ html:not(.js) .island,
 .club-hero__logo {
   --logo-h: clamp(84px, 9vw, 128px);
   margin-bottom: 22px;
+}
+.club-hero__logo.club-logo--sticker,
+.club-panel__logo.club-logo--sticker {
+  --logo-h: clamp(58px, 5.6vw, 84px);
 }
 .club-hero__logo.club-logo--round {
   --logo-h: clamp(96px, 10vw, 150px);
@@ -3453,9 +3833,9 @@ html:not(.js) .island,
 }
 .gallery__head {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 30px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
   margin-bottom: clamp(26px, 4vh, 48px);
 }
 .gallery__head .h2 {
@@ -3526,11 +3906,8 @@ html:not(.js) .island,
   .nav__toggle {
     display: block;
   }
-  .paths__grid,
-  .manifesto__cols,
   .faq__grid,
   .cta__grid,
-  .club-intro__cols,
   .product__grid,
   .place__grid {
     grid-template-columns: 1fr;
@@ -3539,7 +3916,6 @@ html:not(.js) .island,
     grid-template-columns: 1fr;
   }
   .services__head,
-  .highlights__head,
   .insta__inner {
     flex-direction: column;
     align-items: flex-start;
@@ -3721,7 +4097,6 @@ html:not(.js) .hero__canvas {
 }
 /* títulos de cada seção na fonte de parque (Baloo 2), com espaçamento normal */
 .menu__links a,
-.path-card__title,
 .marquee__track,
 .service h3,
 .service__quote,
@@ -3739,7 +4114,6 @@ html:not(.js) .hero__canvas {
   letter-spacing: -0.01em;
 }
 .menu__links a,
-.path-card__title,
 .marquee__track,
 .service__quote,
 .club-panel__name,
@@ -3757,8 +4131,7 @@ html:not(.js) .hero__canvas {
 .product__steps h3 {
   font-weight: 600;
 }
-.manifesto__lead,
-.club-intro__cols p:first-child {
+.club-intro__lead {
   letter-spacing: -0.005em;
 }
 
