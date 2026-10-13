@@ -97,14 +97,14 @@ html:not(.js) .hb__fallback {
    o atraso: depois, nada fica preso no elemento */
 @media (prefers-reduced-motion: no-preference) {
   .hb__cover [data-hb-intro] {
-    animation: hbIntro 0.9s cubic-bezier(0.16, 1, 0.3, 1) backwards;
-    animation-delay: 0.1s;
+    animation: hbIntro 0.7s cubic-bezier(0.16, 1, 0.3, 1) backwards;
+    animation-delay: 0.05s;
   }
   .hb__cover .hb__lead[data-hb-intro] {
-    animation-delay: 0.45s;
+    animation-delay: 0.15s;
   }
   .hb__cover .hb__actions[data-hb-intro] {
-    animation-delay: 0.55s;
+    animation-delay: 0.25s;
   }
 }
 @keyframes hbIntro {

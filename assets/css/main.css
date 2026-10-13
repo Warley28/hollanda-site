@@ -4161,11 +4161,13 @@ html:not(.js) .hero__canvas {
 /* ==========================================================================
    Páginas dos clubes: capas leves, linhas d'água, o sol do dia e a galeria no celular
    ========================================================================== */
-/* o "HOLLANDA" com foto do rodapé só baixa perto do fim da página (190 KB em toda página) */
+/* o "HOLLANDA" com foto do rodapé só baixa perto do fim da página (190 KB em toda página); a foto
+   deslizando também só começa ali (era uma animação repintando a tela inteira desde a abertura) */
 html.js .footer:not(.is-near) .footer__mark {
   background-image: none;
   -webkit-mask: none;
   mask: none;
+  animation: none;
 }
 /* foto que ainda vai baixar (app.js, [data-defer]): sem o texto alternativo aparecendo no lugar */
 img[data-lazy-src] {
