@@ -3936,10 +3936,39 @@ html:not(.js) .island,
     grid-template-columns: 1fr;
     grid-template-areas: "eyebrow" "title" "note";
   }
+  /* a ilha (pílula Palmeiras · Raposa · Ouro Verde) fica fixa embaixo da tela: o conteúdo do painel
+     termina acima dela, senão ela cobria o botão "Conhecer…". "Produto" e "Comercialização" lado a lado
+     para o botão caber também em telas baixas */
+  .club-panel__content {
+    padding-bottom: calc(max(18px, env(safe-area-inset-bottom) + 10px) + 48px + 16px);
+  }
   .club-panel__foot {
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 14px;
+    padding-top: 16px;
+  }
+  .club-panel__foot p {
+    font-size: 0.92rem;
+    line-height: 1.35;
+  }
+  /* "Comercialização" repete o produto ("Títulos familiares" / "Título familiar em Uberlândia") */
+  .club-panel__foot p + p {
+    display: none;
+  }
+  /* nome e logo pela altura da tela (a congelada, --vh): em telas baixas, como a do iPhone SE, o botão
+     também cabe acima da ilha. Sem media query de altura: ela mudaria com as barras do navegador */
+  .club-panel__name {
+    font-size: min(3rem, calc(var(--vh) * 6.4));
+  }
+  .club-panel .club-panel__logo,
+  .club-panel .club-panel__logo.club-logo--round,
+  .club-panel .club-panel__logo.club-logo--sticker {
+    --logo-h: min(84px, calc(var(--vh) * 10.5));
+    margin-bottom: calc(var(--vh) * 2);
   }
   .club-panel__foot .btn {
+    grid-column: 1 / -1;
     margin-left: 0;
     width: 100%;
   }
