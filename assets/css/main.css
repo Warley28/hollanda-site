@@ -537,6 +537,14 @@ html:not(.js) .loader,
 .nav__links a {
   position: relative;
   padding: 6px 0;
+  white-space: nowrap;
+}
+/* janelas médias (ex.: 1000 px): "A Hollanda" quebrava em duas linhas */
+@media (min-width: 901px) and (max-width: 1100px) {
+  .nav__links {
+    gap: 18px;
+    font-size: 0.86rem;
+  }
 }
 .nav__links a::after {
   content: "";
