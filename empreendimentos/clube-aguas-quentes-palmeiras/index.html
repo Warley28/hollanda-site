@@ -330,27 +330,57 @@
     </footer>
 
     <script>
-      // scripts pedidos quando a página termina de carregar (o conteúdo aparece antes); a ordem é mantida
+      // scripts pedidos só depois da 1ª pintura confirmada pelo navegador e do fim do carregamento:
+      // o conteúdo aparece antes e, no PageSpeed, o "maior elemento" não espera o JavaScript (numa
+      // máquina lenta o carregamento termina antes da 1ª pintura). A ordem entre eles é mantida.
+      window.__hlLate = true;
       (function (list) {
         var done = false;
+        var painted = false;
+        var loaded = document.readyState === "complete";
         function go() {
           if (done) return;
           done = true;
-          list.forEach(function (src) {
+          list.forEach(function (src, i) {
             var s = document.createElement("script");
             s.src = src;
             s.async = false;
+            if (i === list.length - 1) {
+              s.onload = function () {
+                document.dispatchEvent(new Event("hollanda:scripts"));
+              };
+            }
             document.body.appendChild(s);
           });
         }
-        function start() {
-          requestAnimationFrame(function () {
-            setTimeout(go, 0);
+        function check() {
+          if (painted && loaded) {
+            requestAnimationFrame(function () {
+              setTimeout(go, 0);
+            });
+          }
+        }
+        try {
+          if (PerformanceObserver.supportedEntryTypes.indexOf("paint") < 0) throw 0;
+          new PerformanceObserver(function (l) {
+            l.getEntries().forEach(function (e) {
+              if (e.name === "first-contentful-paint") {
+                painted = true;
+                check();
+              }
+            });
+          }).observe({ type: "paint", buffered: true });
+        } catch (e) {
+          painted = true;
+        }
+        if (!loaded) {
+          window.addEventListener("load", function () {
+            loaded = true;
+            check();
           });
         }
-        if (document.readyState === "complete") start();
-        else window.addEventListener("load", start);
-        setTimeout(go, 3000);
+        check();
+        setTimeout(go, 3500);
       })(["../../assets/vendor/gsap.min.js", "../../assets/vendor/ScrollTrigger.min.js", "../../assets/vendor/SplitText.min.js", "../../assets/vendor/lenis.min.js", "../../assets/js/app.js"]);
     </script>
   </body>
