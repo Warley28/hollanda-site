@@ -18,10 +18,20 @@
 @media (prefers-reduced-motion: no-preference) {
   html.js .hb-track {
     height: calc(100svh + 620vh);
+    /* no iPhone, quando a barra de endereço some a tela cresce além da capa (100svh): a faixa que
+       aparece embaixo fica escura, da cor da capa */
+    background: #020b1c;
   }
   html.js .hb-track > .hb {
     position: sticky;
     top: 0;
+  }
+}
+/* telas de toque: a mesma história em ~4 telas (menos deslizes para sair da capa). O hero-b.js mede a
+   rolagem em proporção ao trilho, então as paradas continuam nos mesmos pontos da história */
+@media (prefers-reduced-motion: no-preference) and (hover: none) and (pointer: coarse) {
+  html.js .hb-track {
+    height: calc(100svh + 410vh);
   }
 }
 .hb__gl,

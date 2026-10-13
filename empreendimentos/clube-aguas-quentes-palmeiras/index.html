@@ -330,14 +330,13 @@
     </footer>
 
     <script>
-      // scripts pedidos só depois da 1ª pintura confirmada pelo navegador e do fim do carregamento:
-      // o conteúdo aparece antes e, no PageSpeed, o "maior elemento" não espera o JavaScript (numa
-      // máquina lenta o carregamento termina antes da 1ª pintura). A ordem entre eles é mantida.
+      // scripts pedidos logo depois da 1ª pintura confirmada pelo navegador: o conteúdo aparece antes e,
+      // no PageSpeed, o "maior elemento" não espera o JavaScript. Não espera o fim do carregamento: no
+      // celular a capa precisa responder ao dedo o quanto antes. A ordem entre eles é mantida.
       window.__hlLate = true;
       (function (list) {
         var done = false;
         var painted = false;
-        var loaded = document.readyState === "complete";
         function go() {
           if (done) return;
           done = true;
@@ -354,7 +353,7 @@
           });
         }
         function check() {
-          if (painted && loaded) {
+          if (painted) {
             requestAnimationFrame(function () {
               setTimeout(go, 0);
             });
@@ -373,15 +372,9 @@
         } catch (e) {
           painted = true;
         }
-        if (!loaded) {
-          window.addEventListener("load", function () {
-            loaded = true;
-            check();
-          });
-        }
         check();
         setTimeout(go, 3500);
-      })(["../../assets/vendor/gsap.min.js", "../../assets/vendor/ScrollTrigger.min.js", "../../assets/vendor/SplitText.min.js", "../../assets/vendor/lenis.min.js", "../../assets/js/app.js"]);
+      })(["../../assets/vendor/gsap.min.js?v=68fc38bd", "../../assets/vendor/ScrollTrigger.min.js?v=fc72256f", "../../assets/vendor/SplitText.min.js?v=7a9efdb1", "../../assets/vendor/lenis.min.js?v=daec1872", "../../assets/js/app.js?v=f30fad80"]);
     </script>
   </body>
 </html>
