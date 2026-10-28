@@ -1,0 +1,5 @@
+# Hollanda Parques & Resorts: o site inteiro pode ser indexado
+User-agent: *
+Allow: /
+
+Sitemap: https://hollandaparqueseresorts.com.br/sitemap.xml
