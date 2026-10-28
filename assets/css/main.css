@@ -4479,3 +4479,343 @@ html.wave-in::after {
 .reduced .wave {
   display: none;
 }
+
+/* ---------- WhatsApp flutuante (assets/js/whatsapp.js) ----------
+   Botão no canto inferior direito; abre um mini formulário (3 perguntas) que monta a mensagem e segue
+   para o WhatsApp. Verde e ícone oficiais do WhatsApp; o resto segue o site (papel, azul-marinho, mola) */
+.wa-fab {
+  --wa-bottom: max(18px, calc(env(safe-area-inset-bottom) + 10px));
+  position: fixed;
+  z-index: 86;
+  right: max(16px, calc(env(safe-area-inset-right) + 16px));
+  bottom: var(--wa-bottom);
+  width: 58px;
+  height: 58px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: #fff;
+  background: #25d366;
+  box-shadow: 0 10px 28px rgba(7, 94, 84, 0.34), 0 2px 6px rgba(2, 12, 30, 0.18);
+  cursor: pointer;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(18px) scale(0.86);
+  transition: opacity 0.4s, visibility 0.4s, transform 0.6s var(--ease), box-shadow 0.3s;
+}
+.wa-on .wa-fab {
+  opacity: 1;
+  visibility: visible;
+  transform: none;
+}
+.wa-fab:hover {
+  box-shadow: 0 14px 34px rgba(7, 94, 84, 0.42), 0 2px 6px rgba(2, 12, 30, 0.18);
+}
+.wa-fab:active {
+  transform: scale(0.94);
+}
+.wa-fab:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 3px;
+}
+.wa-fab > svg {
+  width: 30px;
+  height: 30px;
+  transition: transform 0.5s var(--ease), opacity 0.3s;
+}
+/* aberto: o ícone gira e sai, entra um X */
+.wa-fab__x {
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.6);
+  transition: transform 0.5s var(--ease), opacity 0.3s;
+}
+.wa-fab__x::before,
+.wa-fab__x::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 20px;
+  height: 2.5px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.wa-fab__x::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.wa-open .wa-fab > svg {
+  opacity: 0;
+  transform: rotate(90deg) scale(0.6);
+}
+.wa-open .wa-fab__x {
+  opacity: 1;
+  transform: none;
+}
+/* legenda ao passar o mouse (computador) */
+.wa-tip {
+  position: fixed;
+  z-index: 86;
+  right: calc(max(16px, calc(env(safe-area-inset-right) + 16px)) + 70px);
+  bottom: calc(max(18px, calc(env(safe-area-inset-bottom) + 10px)) + 15px);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #fff;
+  background: var(--deep);
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(8px);
+  transition: opacity 0.3s, transform 0.4s var(--ease);
+}
+@media (hover: hover) {
+  .wa-on:not(.wa-open) .wa-fab:hover + .wa-tip {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.wa-panel {
+  position: fixed;
+  z-index: 87;
+  right: max(16px, calc(env(safe-area-inset-right) + 16px));
+  bottom: calc(max(18px, calc(env(safe-area-inset-bottom) + 10px)) + 72px);
+  width: min(360px, calc(100vw - 32px));
+  max-height: calc(var(--vh) * 100 - 120px);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--foam);
+  color: var(--ink);
+  box-shadow: 0 30px 70px rgba(2, 12, 30, 0.3), 0 4px 14px rgba(2, 12, 30, 0.12);
+  transform-origin: calc(100% - 29px) calc(100% + 43px);
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+  transition: opacity 0.25s, transform 0.5s var(--ease);
+}
+.wa-open .wa-panel {
+  opacity: 1;
+  transform: none;
+}
+.wa-panel[hidden] {
+  display: none;
+}
+.wa-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 14px 16px 16px;
+  color: #fff;
+  background: var(--deep);
+}
+.wa-panel__icon {
+  flex: none;
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: #25d366;
+}
+.wa-panel__icon svg {
+  width: 22px;
+  height: 22px;
+}
+.wa-panel__head div {
+  flex: 1;
+  min-width: 0;
+}
+.wa-panel__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.12rem;
+  line-height: 1.1;
+}
+.wa-panel__sub {
+  margin: 3px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.72);
+}
+.wa-panel__close {
+  flex: none;
+  position: relative;
+  width: 34px;
+  height: 34px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+}
+.wa-panel__close::before,
+.wa-panel__close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 14px;
+  height: 2px;
+  border-radius: 2px;
+  background: #fff;
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.wa-panel__close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.wa-panel__close:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+.wa-panel__body {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 18px 16px 16px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.wa-q {
+  transition: opacity 0.4s, transform 0.6s var(--ease);
+}
+.wa-q.is-new {
+  opacity: 0;
+  transform: translateY(10px);
+}
+/* pergunta: bolha de conversa */
+.wa-q__bubble {
+  display: inline-block;
+  max-width: 88%;
+  margin: 0;
+  padding: 9px 13px;
+  border-radius: 4px 16px 16px 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(11, 26, 51, 0.1);
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+.wa-q__opts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+.wa-chip {
+  padding: 9px 14px;
+  border: 1.5px solid var(--navy);
+  border-radius: 999px;
+  background: #fff;
+  color: var(--navy);
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s, transform 0.2s;
+}
+.wa-chip:hover {
+  background: #eef1f6;
+}
+.wa-chip:active {
+  transform: scale(0.97);
+}
+.wa-chip[aria-pressed="true"] {
+  background: var(--navy);
+  color: #fff;
+}
+.wa-chip:focus-visible,
+.wa-send:focus-visible,
+.wa-panel__close:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+.wa-input {
+  display: block;
+  width: 100%;
+  margin-top: 10px;
+  padding: 13px 14px;
+  border: 1.5px solid var(--line-l);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-size: 16px; /* 16px: o iPhone não dá zoom ao tocar no campo */
+}
+.wa-input:focus {
+  outline: none;
+  border-color: #25d366;
+  box-shadow: 0 0 0 3px rgba(37, 211, 102, 0.22);
+}
+.wa-input[aria-invalid="true"] {
+  border-color: #b3261e;
+}
+.wa-error {
+  margin: 6px 0 0;
+  font-size: 0.82rem;
+  color: #b3261e;
+}
+.wa-send {
+  width: 100%;
+  margin-top: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border: 0;
+  border-radius: 999px;
+  /* verde do WhatsApp com texto escuro (texto branco nesse verde não tem contraste suficiente) */
+  background: #25d366;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.wa-send svg {
+  width: 20px;
+  height: 20px;
+}
+.wa-send:hover {
+  background: #1fbe5b;
+}
+.wa-send:active {
+  transform: scale(0.98);
+}
+/* página inicial no celular: a ilha de atalhos ocupa o centro de baixo; o botão sobe acima dela */
+@media (max-width: 700px) {
+  .page-home .wa-fab {
+    bottom: calc(var(--wa-bottom) + 60px);
+  }
+  .page-home .wa-tip {
+    display: none;
+  }
+  .page-home .wa-panel {
+    bottom: calc(max(18px, calc(env(safe-area-inset-bottom) + 10px)) + 132px);
+    max-height: calc(var(--vh) * 100 - 190px);
+  }
+}
+.menu-open .wa-fab,
+.menu-open .wa-panel,
+.menu-open .wa-tip {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+@media (prefers-reduced-motion: reduce) {
+  .wa-fab,
+  .wa-fab > svg,
+  .wa-fab__x,
+  .wa-panel,
+  .wa-q {
+    transition: none;
+  }
+}
