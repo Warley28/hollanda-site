@@ -1496,6 +1496,14 @@ html:not(.js) .loader,
   color: rgba(255, 255, 255, 0.66);
   font-size: 0.95rem;
 }
+.services__note p {
+  margin: 0 0 12px;
+}
+/* link para o guia "Comercialização de títulos" */
+.services__note .link-arrow {
+  font-size: 0.9rem;
+  color: #fff;
+}
 .services__track {
   display: flex;
   gap: clamp(14px, 1.6vw, 22px);
