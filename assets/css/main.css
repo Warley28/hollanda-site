@@ -48,7 +48,7 @@
   --muted: #66757e;
   --orange: #ea8a10;
   --orange-2: #f8c98a;
-  --orange-ink: #b4600a;
+  --orange-ink: #9a5208; /* 5,6:1 sobre o papel (o #b4600a dava 4,35 e o PageSpeed reprovava o contraste) */
   --aqua: #63d4d4;
   --foam: #f4f1ea;
   --paper: #fbfaf6;
