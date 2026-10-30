@@ -1,0 +1,1539 @@
+/* Landing "Venda de títulos" (site/venda-de-titulos/): página de vendas para donos, investidores e gestores.
+   Ordem: capa com o Guilherme → dor → prova (placar) → Guilherme → soluções por fase → modalidades →
+   como funciona → bastidores → perguntas → diagnóstico. Sem pin do ScrollTrigger (só position: sticky);
+   usa os tokens e componentes de main.css (nav, crumbs, botões, marquee, FAQ, campos, ondas, rodapé). */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- seções ---------- */
+.v-sec {
+  position: relative;
+  padding: clamp(100px, 12vw, 170px) 0;
+}
+.v-dark {
+  background: var(--deep);
+  color: #fff;
+}
+.v-paper {
+  background: var(--paper);
+}
+.v-foam {
+  background: var(--foam);
+}
+.v-head {
+  max-width: 900px;
+}
+.v-head .h2 {
+  margin: 0;
+}
+.v-head p {
+  max-width: 640px;
+  margin: 22px 0 0;
+  font-size: clamp(1.04rem, 1.25vw, 1.16rem);
+  color: var(--ink-2);
+}
+.v-dark .v-head p {
+  color: rgba(255, 255, 255, 0.78);
+}
+/* cursiva sobre fundo claro: o laranja da marca dá 2,5:1 no papel; o --orange-ink passa no contraste */
+.v-paper .h2 em.accent,
+.v-foam .h2 em.accent,
+.v-faq .h2 em.accent {
+  color: var(--orange-ink);
+}
+.v-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+/* lista com ✓ laranja (painéis, modalidades, diagnóstico) */
+.v-checks {
+  margin: 22px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.v-checks li {
+  position: relative;
+  padding-left: 32px;
+  line-height: 1.45;
+}
+.v-checks li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background:
+    linear-gradient(45deg, transparent 46%, var(--ink) 46%, var(--ink) 58%, transparent 58%) 6px 5px / 8px 8px no-repeat,
+    var(--orange);
+}
+
+/* ==========================================================================
+   1. capa
+   ========================================================================== */
+.v-hero {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  min-height: max(700px, calc(var(--vh) * 100));
+  color: #fff;
+  background: var(--deep);
+  overflow: hidden;
+}
+/* a arte da capa (fundo do Google Flow + Guilherme retocado, montada fora da página) cobre a seção inteira;
+   o lado esquerdo dela já vem escuro para o texto. O enquadramento segura a cabeça abaixo do menu */
+.v-hero__art {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  margin: 0;
+}
+.v-hero__art img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 25% 20%;
+}
+.v-hero__art::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, rgba(4, 26, 58, 0.55) 0%, rgba(4, 26, 58, 0) 42%);
+  pointer-events: none;
+}
+.v-hero__cap {
+  position: absolute;
+  z-index: 1;
+  right: var(--gutter);
+  bottom: clamp(70px, calc(var(--vh) * 12), 140px);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+  text-align: right;
+  font-size: 0.86rem;
+  line-height: 1.35;
+  color: rgba(255, 255, 255, 0.78);
+  text-shadow: 0 2px 18px rgba(3, 18, 44, 0.95);
+}
+.v-hero__cap b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+}
+.v-hero__cap-num {
+  color: var(--orange-2);
+  font-weight: 700;
+}
+.v-hero__content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding-top: calc(var(--nav-h) + 26px);
+  padding-bottom: clamp(70px, calc(var(--vh) * 11), 130px);
+}
+.v-hero__content > * {
+  max-width: min(620px, 46vw);
+}
+.v-hero .crumbs {
+  margin-bottom: auto;
+  padding-top: 0;
+}
+.v-hero .eyebrow {
+  margin-top: 36px;
+}
+.v-hero__title {
+  margin: 18px 0 0;
+  font-weight: 800;
+  font-size: clamp(2.9rem, 5.7vw, 6.3rem);
+  line-height: 0.95;
+  letter-spacing: -0.025em;
+}
+.v-hero__title em {
+  display: inline-block;
+}
+.v-hero__lead {
+  max-width: 560px;
+  margin: 24px 0 0;
+  font-size: clamp(1.04rem, 1.3vw, 1.2rem);
+  color: rgba(255, 255, 255, 0.84);
+}
+.v-hero__micro {
+  margin: 16px 0 0;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+.v-hero__proof {
+  margin: clamp(30px, 4vw, 48px) 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-d);
+  font-size: 0.98rem;
+  color: rgba(255, 255, 255, 0.74);
+}
+.v-hero__proof b {
+  color: #fff;
+  font-weight: 800;
+}
+
+/* ==========================================================================
+   2. dor
+   ========================================================================== */
+.v-pain__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(40px, 7vw, 120px);
+  align-items: start;
+}
+.v-pain__head {
+  position: sticky;
+  top: calc(var(--nav-h) + 40px);
+}
+.v-pain__head .h2 {
+  margin: 0;
+}
+.v-pain__head p {
+  max-width: 520px;
+  margin: 24px 0 0;
+  font-size: clamp(1.04rem, 1.25vw, 1.16rem);
+  color: var(--ink-2);
+}
+.v-pain__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.v-pain__item {
+  padding: clamp(26px, 3.2vw, 42px) 0;
+  border-top: 1px solid var(--line-l);
+  transition: opacity 0.7s var(--ease);
+}
+.v-pain__item:last-child {
+  border-bottom: 1px solid var(--line-l);
+}
+.v-pain__item h3 {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.7rem, 3vw, 2.7rem);
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+}
+.v-pain__item h3::before {
+  content: "";
+  flex: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  transition: background-color 0.5s, transform 0.6s var(--ease);
+}
+.v-pain__item.is-on h3::before {
+  background: var(--orange);
+  transform: scale(1.25);
+}
+.v-pain__item p {
+  max-width: 520px;
+  margin: 10px 0 0 30px;
+  font-size: 1.06rem;
+  color: var(--ink-2);
+}
+/* com o JS ligado e a lista perto da tela, os itens que não estão no centro ficam apagados */
+.v-pain__list.is-live .v-pain__item:not(.is-on) {
+  opacity: 0.32;
+}
+.v-turn {
+  margin-top: clamp(100px, 12vw, 180px);
+}
+/* virada: uma frase curta e grande que acende com a rolagem + uma linha de apoio (o bloco de 4 linhas cansava) */
+.v-turn__big {
+  max-width: 13em;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(2.3rem, 5.6vw, 5.4rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.v-turn__big em.accent {
+  font-size: 1.12em;
+  color: var(--orange-ink);
+}
+.v-turn__sub {
+  max-width: 46ch;
+  text-wrap: balance;
+  margin: clamp(18px, 2.4vw, 30px) 0 0;
+  font-size: clamp(1.1rem, 1.5vw, 1.35rem);
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+/* ==========================================================================
+   2b. vídeo de 1 minuto (só baixa ao clicar)
+   ========================================================================== */
+.v-film {
+  padding-bottom: 0;
+}
+.v-video {
+  position: relative;
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  aspect-ratio: 16 / 9;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--abyss);
+  box-shadow: 0 50px 100px -50px rgba(0, 0, 0, 0.7);
+}
+.v-video img,
+.v-video video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.v-video::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(60% 60% at 50% 50%, rgba(2, 15, 38, 0.1), rgba(2, 15, 38, 0.45));
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+.v-video.is-playing::after {
+  opacity: 0;
+}
+.v-video__play {
+  position: absolute;
+  z-index: 1;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 26px 10px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  color: var(--ink);
+  font: 700 1rem/1 var(--font-sans);
+  cursor: pointer;
+  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
+  transition: transform 0.5s var(--ease);
+}
+.v-video__play:hover {
+  transform: translate(-50%, -50%) scale(1.05);
+}
+.v-video__play span {
+  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--orange);
+}
+.v-video__play span::after {
+  content: "";
+  position: absolute;
+  left: 21px;
+  top: 16px;
+  border-style: solid;
+  border-width: 10px 0 10px 16px;
+  border-color: transparent transparent transparent var(--ink);
+}
+
+/* ==========================================================================
+   3. prova: R$ 5,5 mi → 1.430 → placar
+   ========================================================================== */
+.v-totals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 32px clamp(40px, 6vw, 96px);
+  margin-top: clamp(56px, 7vw, 100px);
+}
+.v-total + .v-total {
+  padding-left: clamp(40px, 6vw, 96px);
+  border-left: 1px solid var(--line-d);
+}
+.v-total {
+  margin: 0;
+}
+.v-total b {
+  display: block;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(2.6rem, 8vw, 5.4rem);
+  line-height: 0.86;
+  letter-spacing: -0.04em;
+  font-variant-numeric: tabular-nums;
+}
+.v-total--main b {
+  font-size: clamp(2.8rem, 11.5vw, 7.6rem);
+  color: var(--orange);
+}
+.v-total > span {
+  display: block;
+  margin-top: 14px;
+  font-size: 1.02rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+.v-score {
+  width: 100%;
+  margin-top: clamp(60px, 7vw, 100px);
+  border-collapse: collapse;
+  font-size: 1rem;
+}
+.v-score th,
+.v-score td {
+  padding: 22px 14px;
+  text-align: left;
+  vertical-align: middle;
+  border-top: 1px solid var(--line-d);
+}
+.v-score th:first-child,
+.v-score td:first-child {
+  padding-left: 0;
+}
+.v-score thead th {
+  padding-top: 0;
+  border-top: 0;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.55);
+}
+.v-score tbody th {
+  font-weight: 400;
+}
+.v-score tbody th,
+.v-score tbody th > span {
+  display: flex;
+  align-items: center;
+}
+.v-score tbody th {
+  gap: 16px;
+}
+.v-score tbody th > span {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+.v-score tbody th b {
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  line-height: 1.15;
+}
+.v-score small {
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+.v-score__thumb {
+  flex: none;
+  width: 60px;
+  height: 60px;
+  border-radius: 16px;
+  object-fit: cover;
+}
+.v-score td {
+  color: rgba(255, 255, 255, 0.82);
+}
+.v-score td b {
+  color: #fff;
+}
+.v-score__big {
+  font-family: var(--font-display);
+  font-size: 2.3rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+.v-bar {
+  display: block;
+  width: min(170px, 100%);
+  height: 8px;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.12);
+  overflow: hidden;
+}
+.v-bar i {
+  display: block;
+  width: calc(var(--v) * 100%);
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--orange), #f7b25a);
+  transform-origin: left;
+  transition: transform 1.4s var(--ease);
+}
+.v-score.is-waiting .v-bar i {
+  transform: scaleX(0);
+}
+.v-score tbody tr:nth-child(2) .v-bar i {
+  transition-delay: 0.12s;
+}
+.v-score tbody tr:nth-child(3) .v-bar i {
+  transition-delay: 0.24s;
+}
+.v-score__rate {
+  display: block;
+  margin-top: 8px;
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.72);
+}
+.v-score tfoot th,
+.v-score tfoot td {
+  border-top: 2px solid rgba(255, 255, 255, 0.32);
+  font-weight: 700;
+  color: #fff;
+}
+.v-score tfoot th {
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+}
+.v-score tfoot td b {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+}
+.v-note {
+  margin: 26px 0 0;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ==========================================================================
+   4. Guilherme
+   ========================================================================== */
+.v-founder {
+  padding-bottom: 0;
+}
+.v-founder__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.82fr) minmax(0, 1fr);
+  gap: clamp(36px, 7vw, 120px);
+  align-items: start;
+}
+.v-founder__media {
+  position: sticky;
+  top: calc(var(--nav-h) + 24px);
+  margin: 0;
+  aspect-ratio: 4 / 5;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--sand);
+  box-shadow: 0 40px 80px -40px rgba(3, 18, 44, 0.45);
+}
+.v-founder__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 28%;
+}
+.v-founder .h2 {
+  margin: 20px 0 0;
+}
+.v-founder__bio {
+  margin: 26px 0 0;
+  font-size: clamp(1.04rem, 1.2vw, 1.14rem);
+  color: var(--ink-2);
+}
+.v-career {
+  margin: clamp(36px, 5vw, 56px) 0 0;
+  padding: 0;
+  list-style: none;
+}
+.v-career li {
+  display: grid;
+  grid-template-columns: minmax(96px, 0.36fr) minmax(0, 1fr);
+  gap: 6px 28px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-top: 1px solid var(--line-l);
+}
+.v-career li:last-child {
+  border-bottom: 1px solid var(--line-l);
+}
+.v-career__num {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(1.9rem, 3.2vw, 2.8rem);
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--orange-ink);
+}
+.v-career span {
+  color: var(--ink-2);
+}
+.v-career strong {
+  display: block;
+  margin-bottom: 4px;
+  font-family: var(--font-display);
+  font-size: 1.16rem;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.v-quote {
+  margin: clamp(40px, 5vw, 64px) 0 0;
+  padding-left: 22px;
+  border-left: 3px solid var(--orange);
+}
+.v-quote p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.3vw, 2rem);
+  line-height: 1.18;
+  color: var(--ink);
+}
+.v-quote footer {
+  margin-top: 12px;
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+.v-founder .marquee {
+  margin-top: clamp(90px, 11vw, 150px);
+}
+.v-founder .marquee__track {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.6rem, 3.6vw, 3.4rem);
+  letter-spacing: -0.02em;
+}
+.v-founder .marquee__track .serif {
+  font-weight: 400;
+}
+.v-places {
+  margin: 0;
+  padding-top: 22px;
+  padding-bottom: clamp(110px, 13vw, 180px);
+  font-size: 0.9rem;
+  color: var(--ink-2);
+}
+
+/* ==========================================================================
+   5. soluções por fase (abas)
+   ========================================================================== */
+.v-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(40px, 5vw, 64px);
+}
+.v-tab {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 14px 24px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  font: 600 1rem/1 var(--font-sans);
+  cursor: pointer;
+  transition: background-color 0.4s var(--ease), border-color 0.4s, color 0.4s;
+}
+.v-tab:hover {
+  border-color: rgba(255, 255, 255, 0.55);
+}
+.v-tab[aria-selected="true"] {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--ink);
+}
+.v-panels {
+  margin-top: 28px;
+}
+.v-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  gap: clamp(28px, 5vw, 80px);
+  align-items: center;
+  padding: clamp(18px, 2.2vw, 30px);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.045);
+  border: 1px solid var(--line-d);
+}
+.v-panel + .v-panel {
+  margin-top: 16px;
+}
+/* com o JS: uma aba por vez (sem JS, as quatro aparecem em sequência) */
+.v-panels.is-tabs .v-panel:not(.is-on) {
+  display: none;
+}
+.v-panels.is-tabs .v-panel + .v-panel {
+  margin-top: 0;
+}
+.v-panels.is-tabs .v-panel.is-on {
+  animation: v-entra 0.75s var(--ease) both;
+}
+@keyframes v-entra {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.v-panel__media {
+  margin: 0;
+  aspect-ratio: 4 / 3;
+  border-radius: calc(var(--radius-lg) - 10px);
+  overflow: hidden;
+  background: var(--navy);
+}
+.v-panel__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.v-panel h3 {
+  margin: 0;
+  font-weight: 700;
+  font-size: clamp(1.6rem, 2.6vw, 2.35rem);
+  line-height: 1.06;
+}
+.v-panel p {
+  margin: 16px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+.v-panel .v-checks {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px 24px;
+  font-size: 0.96rem;
+  color: rgba(255, 255, 255, 0.86);
+}
+.v-panel .v-panel__proof {
+  margin-top: 24px;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(234, 138, 16, 0.12);
+  border: 1px solid rgba(234, 138, 16, 0.38);
+  color: #fff;
+  font-size: 0.98rem;
+}
+.v-panel__proof b {
+  color: var(--orange-2);
+}
+
+/* ==========================================================================
+   6. modalidades
+   ========================================================================== */
+.v-modes__grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: clamp(14px, 1.6vw, 22px);
+  margin-top: clamp(48px, 6vw, 80px);
+}
+.v-mode {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(28px, 3.4vw, 48px);
+  border-radius: var(--radius-lg);
+  background: #fff;
+  border: 1px solid var(--line-l);
+}
+.v-mode h3 {
+  margin: 0;
+  font-weight: 800;
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+.v-mode__for {
+  margin: 10px 0 0;
+  font-weight: 700;
+  color: var(--orange-ink);
+}
+.v-mode > p:not(.v-mode__for) {
+  margin: 18px 0 0;
+  color: var(--ink-2);
+}
+.v-mode .v-checks {
+  margin-bottom: 32px;
+}
+.v-mode .btn {
+  margin-top: auto;
+  align-self: flex-start;
+}
+.v-mode--dark {
+  background: var(--deep);
+  border-color: var(--deep);
+  color: #fff;
+  box-shadow: 0 40px 80px -40px rgba(3, 18, 44, 0.55);
+}
+.v-mode--dark .v-mode__for {
+  color: var(--orange-2);
+}
+.v-mode--dark > p:not(.v-mode__for) {
+  color: rgba(255, 255, 255, 0.8);
+}
+.v-modes__note {
+  margin: 22px 0 0;
+  font-size: 0.92rem;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   7. como funciona: linha que enche
+   ========================================================================== */
+.v-steps__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(40px, 7vw, 120px);
+  align-items: start;
+}
+.v-steps__head {
+  position: sticky;
+  top: calc(var(--nav-h) + 40px);
+}
+.v-steps__head .h2 {
+  margin: 0;
+}
+.v-steps__head p {
+  max-width: 460px;
+  margin: 22px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+}
+.v-steps__track {
+  position: relative;
+  padding-left: 76px;
+}
+.v-steps__line {
+  position: absolute;
+  left: 23px;
+  top: 24px;
+  bottom: 24px;
+  width: 2px;
+  background: rgba(255, 255, 255, 0.14);
+}
+.v-steps__line i {
+  position: absolute;
+  inset: 0;
+  background: var(--orange);
+  transform-origin: top;
+  transform: scaleY(var(--p, 1));
+}
+.v-steps__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: etapa;
+}
+.v-steps__list li {
+  counter-increment: etapa;
+  position: relative;
+  padding-bottom: clamp(56px, 8vw, 110px);
+}
+.v-steps__list li:last-child {
+  padding-bottom: 0;
+}
+.v-steps__list li::before {
+  content: counter(etapa);
+  position: absolute;
+  left: -76px;
+  top: 0;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 2px solid var(--orange);
+  background: var(--deep);
+  color: #fff;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 1.3rem;
+  transition: background-color 0.5s var(--ease), color 0.5s;
+}
+.v-steps__list li.is-on::before,
+.v-steps__track:not(.is-live) li::before {
+  background: var(--orange);
+  color: var(--ink);
+}
+.v-steps__list b {
+  display: block;
+  padding-top: 6px;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.6vw, 2.3rem);
+  line-height: 1.05;
+}
+.v-steps__list span {
+  display: block;
+  max-width: 480px;
+  margin-top: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 1.04rem;
+}
+
+/* ==========================================================================
+   8. bastidores
+   ========================================================================== */
+.v-mosaic {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-auto-rows: clamp(140px, 15vw, 230px);
+  gap: clamp(10px, 1.2vw, 16px);
+  margin-top: clamp(48px, 6vw, 80px);
+}
+.v-mosaic figure {
+  position: relative;
+  margin: 0;
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--sand);
+}
+/* a foto é mais alta que a moldura para o parallax (data-parallax, app.js) não mostrar borda */
+.v-mosaic img {
+  position: absolute;
+  left: 0;
+  top: -9%;
+  width: 100%;
+  height: 118%;
+  object-fit: cover;
+}
+.v-mosaic figure::after {
+  content: "";
+  position: absolute;
+  inset: 55% 0 0;
+  background: linear-gradient(0deg, rgba(3, 18, 44, 0.6), rgba(3, 18, 44, 0));
+  pointer-events: none;
+}
+.v-mosaic figcaption {
+  position: absolute;
+  z-index: 1;
+  left: 14px;
+  right: 14px;
+  bottom: 12px;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #fff;
+}
+/* posições fixas: 5 linhas sem buraco (no celular volta ao fluxo de 2 colunas) */
+.v-m1 {
+  grid-column: 1 / 6;
+  grid-row: 1 / 4;
+}
+.v-m2 {
+  grid-column: 6 / 13;
+  grid-row: 1 / 3;
+}
+.v-m4 {
+  grid-column: 6 / 10;
+  grid-row: 3 / 4;
+}
+.v-m6 {
+  grid-column: 10 / 13;
+  grid-row: 3 / 4;
+}
+.v-m3 {
+  grid-column: 1 / 4;
+  grid-row: 4 / 6;
+}
+.v-m5 {
+  grid-column: 4 / 9;
+  grid-row: 4 / 6;
+}
+.v-m7 {
+  grid-column: 9 / 13;
+  grid-row: 4 / 6;
+}
+
+/* ==========================================================================
+   9. perguntas e 10. diagnóstico
+   ========================================================================== */
+.v-faq {
+  background: var(--foam);
+}
+.v-lead__grid {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  gap: clamp(40px, 6vw, 100px);
+  align-items: start;
+}
+.v-lead__head {
+  position: sticky;
+  top: calc(var(--nav-h) + 40px);
+}
+.v-lead .h2 {
+  margin: 22px 0 0;
+}
+.v-lead__text {
+  max-width: 480px;
+  margin: 24px 0 0;
+  color: rgba(255, 255, 255, 0.8);
+}
+.v-checks--light {
+  color: rgba(255, 255, 255, 0.88);
+}
+.v-lead__alt {
+  margin: 30px 0 0;
+  font-size: 0.92rem;
+  color: rgba(255, 255, 255, 0.62);
+}
+.v-lead__alt a {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.v-form {
+  border-radius: var(--radius-lg);
+  padding: clamp(22px, 3vw, 40px);
+}
+.v-q {
+  margin: 0 0 22px;
+  padding: 0;
+  border: 0;
+  min-width: 0;
+}
+.v-q legend {
+  margin-bottom: 12px;
+  padding: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #fff;
+}
+.v-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.v-chip {
+  position: relative;
+  cursor: pointer;
+}
+.v-chip input {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.v-chip span {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 16px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  background: rgba(3, 18, 44, 0.4);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.94rem;
+  font-weight: 600;
+  transition: background-color 0.3s var(--ease), border-color 0.3s, color 0.3s;
+}
+.v-chip:hover span {
+  border-color: rgba(255, 255, 255, 0.5);
+}
+.v-chip input:checked + span {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: var(--ink);
+}
+.v-chip input:focus-visible + span {
+  outline: 2px solid var(--orange);
+  outline-offset: 3px;
+}
+.v-form .field {
+  font-size: 0.86rem;
+}
+.v-form .field input {
+  font-size: 16px; /* o iPhone não dá zoom */
+}
+.v-form .field em {
+  opacity: 0.8; /* "(opcional)": com os 0,55 do main.css não passava no contraste */
+}
+.v-form__label {
+  margin: 4px 0 8px;
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.82);
+}
+.v-form .pitch__preview {
+  max-height: 150px;
+}
+.v-send {
+  width: 100%;
+  background: #25d366;
+  color: var(--ink);
+}
+.v-send::before {
+  background: #5ce08f;
+}
+.v-send svg {
+  width: 22px;
+  height: 22px;
+  flex: none;
+}
+.v-form__err {
+  min-height: 1.4em;
+  margin: 10px 0 0;
+  font-size: 0.88rem;
+  color: var(--orange-2);
+}
+.v-form__lgpd {
+  margin: 4px 0 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.55);
+}
+.v-updated {
+  margin: clamp(56px, 7vw, 90px) auto 0;
+  font-size: 0.86rem;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+/* ==========================================================================
+   telas menores
+   ========================================================================== */
+@media (max-width: 1100px) {
+  .v-founder__grid,
+  .v-lead__grid,
+  .v-steps__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-founder__media {
+    position: relative;
+    top: auto;
+    max-width: 560px;
+    aspect-ratio: 4 / 4.4;
+  }
+  .v-lead__head,
+  .v-steps__head {
+    position: static;
+  }
+  .v-score th,
+  .v-score td {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+@media (max-width: 899px) {
+  /* capa: o Guilherme em cima, o texto embaixo */
+  .v-hero {
+    flex-direction: column;
+    min-height: 0;
+  }
+  .v-hero__art {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    order: -1;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    max-height: calc(var(--vh) * 78);
+  }
+  .v-hero__art img {
+    object-position: 50% 30%;
+  }
+  .v-hero__art::after {
+    background: linear-gradient(0deg, var(--deep) 0%, rgba(4, 26, 58, 0) 26%);
+  }
+  .v-hero__cap {
+    bottom: 22%;
+  }
+  .v-hero__content {
+    margin-top: -12vw;
+    padding-top: 0;
+    padding-bottom: 76px;
+  }
+  .v-hero__content > * {
+    max-width: none;
+  }
+  .v-hero .crumbs {
+    display: none;
+  }
+  .v-hero .eyebrow {
+    margin-top: 0;
+  }
+  .v-pain__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-pain__head {
+    position: static;
+  }
+  /* placar vira um bloco por empreendimento, com os mesmos rótulos */
+  .v-score thead {
+    display: none;
+  }
+  .v-score,
+  .v-score tbody,
+  .v-score tfoot,
+  .v-score tr {
+    display: block;
+  }
+  .v-score tr {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px 18px;
+    padding: 24px 0;
+    border-top: 1px solid var(--line-d);
+  }
+  .v-score th,
+  .v-score td {
+    display: block;
+    padding: 0;
+    border: 0;
+  }
+  .v-score tbody th,
+  .v-score tfoot th {
+    grid-column: 1 / -1;
+  }
+  .v-score td::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 4px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+  }
+  .v-score td:last-child {
+    grid-column: 1 / -1;
+  }
+  .v-score .v-score__empty {
+    display: none;
+  }
+  .v-score tfoot tr {
+    border-top: 2px solid rgba(255, 255, 255, 0.32);
+  }
+  .v-score tfoot th,
+  .v-score tfoot td {
+    border: 0;
+  }
+  .v-bar {
+    width: 100%;
+  }
+  .v-panel {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-panel .v-checks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-modes__grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .v-mosaic {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-auto-rows: 46vw;
+  }
+  .v-mosaic figure {
+    grid-column: auto / span 1;
+    grid-row: auto / span 1;
+  }
+  .v-mosaic .v-m1,
+  .v-mosaic .v-m2,
+  .v-mosaic .v-m7 {
+    grid-column: auto / span 2;
+  }
+  .v-career li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 699px) {
+  /* no celular o vídeo é o em pé (9:16) */
+  .v-video {
+    aspect-ratio: 9 / 16;
+    max-width: 440px;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 560px) {
+  .v-actions .btn {
+    flex: 1 1 100%;
+  }
+  .v-hero__title {
+    font-size: clamp(2.5rem, 11.5vw, 3.4rem);
+  }
+  .v-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .v-tab {
+    padding: 14px 12px;
+    font-size: 0.94rem;
+  }
+  .v-form .field-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .v-steps__track {
+    padding-left: 62px;
+  }
+  .v-steps__list li::before {
+    left: -62px;
+    width: 42px;
+    height: 42px;
+  }
+  .v-steps__line {
+    left: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-panels.is-tabs .v-panel.is-on {
+    animation: none;
+  }
+  .v-bar i,
+  .v-pain__item {
+    transition: none;
+  }
+}
+
+/* capa "água" (imagem clara e movimentada): escurece mais o lado do texto e o topo do menu */
+.v-hero--agua .v-hero__art::after {
+  background:
+    linear-gradient(90deg, rgba(4, 26, 58, 0.92) 0%, rgba(4, 26, 58, 0.78) 30%, rgba(4, 26, 58, 0.3) 47%, rgba(4, 26, 58, 0) 60%),
+    linear-gradient(180deg, rgba(4, 26, 58, 0.75) 0%, rgba(4, 26, 58, 0) 20%),
+    linear-gradient(0deg, rgba(4, 26, 58, 0.7) 0%, rgba(4, 26, 58, 0) 22%);
+}
+.v-hero--agua .v-hero__cap {
+  text-shadow: 0 1px 3px rgba(3, 18, 44, 0.9), 0 2px 20px rgba(3, 18, 44, 0.95);
+}
+.v-hero--agua .v-hero__cap-num {
+  color: #fff;
+}
+@media (max-width: 899px) {
+  .v-hero--agua .v-hero__art::after {
+    background:
+      linear-gradient(0deg, var(--deep) 0%, rgba(4, 26, 58, 0) 30%),
+      linear-gradient(180deg, rgba(4, 26, 58, 0.78) 0%, rgba(4, 26, 58, 0) 22%);
+  }
+}
+
+/* ==========================================================================
+   revisão de detalhes (29/10)
+   ========================================================================== */
+/* a parte cursiva do título quebra inteira (antes sobrava "como" ou "o" sozinho no fim da linha) */
+.page-lp .h2 em.serif {
+  display: inline-block;
+}
+/* carreira: rótulo em texto (não número) menor */
+.v-career__num--txt {
+  font-size: clamp(1.2rem, 1.7vw, 1.45rem);
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+/* a linha das etapas termina no último número */
+.v-steps__list li:last-child::after {
+  content: "";
+  position: absolute;
+  left: -76px;
+  top: 48px;
+  bottom: -30px;
+  width: 48px;
+  background: var(--deep);
+}
+/* ondas no fim de bastidores e perguntas */
+.v-faq {
+  position: relative;
+}
+/* rodapé: WhatsApp e Instagram juntos à direita */
+.v-foot-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px 22px;
+}
+/* fim do formulário sem vão sobrando */
+.v-lead {
+  padding-bottom: clamp(56px, 7vw, 90px);
+}
+.v-updated {
+  margin-top: clamp(40px, 5vw, 64px);
+}
+@media (max-width: 560px) {
+  /* o selo da capa cabe numa linha */
+  .page-lp .v-hero .eyebrow {
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    gap: 10px;
+  }
+  .page-lp .v-hero .eyebrow::before {
+    width: 16px;
+  }
+  .v-steps__list li:last-child::after {
+    left: -62px;
+    top: 42px;
+    width: 42px;
+  }
+  .footer__bottom {
+    flex-direction: column;
+  }
+  .v-foot-links {
+    justify-content: flex-start;
+  }
+}
+/* vídeo no celular: o botão fica embaixo, longe do texto da capa */
+@media (max-width: 699px) {
+  .v-video__play {
+    top: auto;
+    bottom: 9%;
+    transform: translateX(-50%);
+  }
+  .v-video__play:hover {
+    transform: translateX(-50%) scale(1.05);
+  }
+}
+/* capa do vídeo = a abertura ("Título não se vende sozinho."): no computador o botão fica à direita do texto */
+@media (min-width: 700px) {
+  .v-video__play {
+    left: 72%;
+  }
+}
+@media (max-width: 560px) {
+  .v-total + .v-total {
+    padding-left: 0;
+    border-left: 0;
+  }
+}
+/* números da carreira numa linha só ("R$ 10 mi+" quebrava) */
+.v-career li {
+  grid-template-columns: minmax(150px, 0.42fr) minmax(0, 1fr);
+}
+.v-career__num:not(.v-career__num--txt) {
+  white-space: nowrap;
+  font-size: clamp(1.7rem, 2.6vw, 2.4rem);
+}
+@media (max-width: 899px) {
+  .v-career li {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.v-video__play {
+  white-space: nowrap;
+}
+
+/* ==========================================================================
+   capa: chamada do público + promessa (copy 29/10)
+   ========================================================================== */
+.v-hero__call {
+  margin: 36px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.15rem, 1.6vw, 1.55rem);
+  line-height: 1.2;
+  color: var(--orange);
+}
+.v-hero__title {
+  margin-top: 10px;
+  font-size: clamp(2.5rem, 4.3vw, 4.6rem);
+  line-height: 1;
+}
+/* a promessa começa em linha nova, com um marca-texto laranja por trás (como no vídeo) */
+.v-hero__promise {
+  background: linear-gradient(transparent 66%, rgba(234, 138, 16, 0.55) 66%, rgba(234, 138, 16, 0.55) 86%, transparent 86%);
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+  padding: 0 0.08em;
+}
+.v-hero__lead b {
+  color: #fff;
+}
+/* chamada depois do placar */
+.v-proof__cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px 32px;
+  margin-top: clamp(40px, 5vw, 64px);
+  padding: clamp(22px, 2.6vw, 32px) clamp(22px, 3vw, 40px);
+  border-radius: var(--radius-lg);
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--line-d);
+}
+.v-proof__cta p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.4rem, 2.4vw, 2rem);
+  line-height: 1.1;
+}
+.v-proof__cta b {
+  color: var(--orange);
+}
+
+/* celular no padrão da referência: texto centralizado em cima, o Guilherme grande embaixo e o botão
+   sobre o pé da foto. O .v-hero__content vira "display: contents" para ordenar cada peça */
+@media (max-width: 899px) {
+  .v-hero {
+    text-align: center;
+  }
+  .v-hero__content {
+    display: contents;
+  }
+  .v-hero__content > * {
+    margin-left: var(--gutter);
+    margin-right: var(--gutter);
+    max-width: none;
+  }
+  .v-hero__call {
+    order: 1;
+    margin-top: calc(var(--nav-h) + 22px);
+    font-size: 1.2rem;
+  }
+  .v-hero__title {
+    order: 2;
+    font-size: clamp(2.1rem, 9.6vw, 2.9rem);
+    line-height: 1.04;
+  }
+  .v-hero__lead {
+    order: 3;
+    margin-top: 16px;
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+  .v-hero .v-hero__art {
+    order: 4;
+    margin: 4px 0 0;
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    max-height: none;
+  }
+  .v-hero__art img {
+    object-position: 50% 0%;
+  }
+  .v-hero.v-hero--agua .v-hero__art::after,
+  .v-hero__art::after {
+    background: linear-gradient(180deg, var(--deep) 0%, rgba(4, 26, 58, 0) 22%, rgba(4, 26, 58, 0) 62%, var(--deep) 100%);
+  }
+  .v-hero__cap {
+    bottom: 26%;
+  }
+  .v-hero .v-actions {
+    order: 5;
+    position: relative;
+    z-index: 2;
+    margin-top: -64px;
+    justify-content: center;
+  }
+  .v-hero__micro {
+    order: 6;
+  }
+  .v-hero__proof {
+    order: 7;
+    margin-bottom: 72px;
+  }
+}
+.v-nowrap {
+  white-space: nowrap;
+}
