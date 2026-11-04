@@ -78,9 +78,8 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  background:
-    linear-gradient(45deg, transparent 46%, var(--ink) 46%, var(--ink) 58%, transparent 58%) 6px 5px / 8px 8px no-repeat,
-    var(--orange);
+  /* "certo" desenhado (o traço diagonal de antes parecia um sinal de proibido) */
+  background: var(--orange) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3E%3Cpath d='M5.6 10.4l2.9 2.9 5.9-6.4' fill='none' stroke='%230b1a33' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 100% no-repeat;
 }
 
 /* ==========================================================================
@@ -291,8 +290,39 @@
 /* ==========================================================================
    2b. vídeo de 1 minuto (só baixa ao clicar)
    ========================================================================== */
+/* fundo: o Raposa Water Park à noite (escurecido nas bordas, como a foto de referência); o vídeo flutua
+   por cima com moldura clara e brilho laranja, para não sumir no azul da seção */
 .v-film {
-  padding-bottom: 0;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-bottom: clamp(48px, 6vw, 96px);
+}
+.v-film__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  margin: 0;
+}
+.v-film__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 38%;
+}
+.v-film__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(90deg, rgba(4, 26, 58, 0.72) 0%, rgba(4, 26, 58, 0) 55%),
+    linear-gradient(180deg, rgba(4, 26, 58, 0.5) 0%, rgba(4, 26, 58, 0.18) 40%, rgba(4, 26, 58, 0.55) 78%, var(--deep) 100%),
+    radial-gradient(130% 90% at 55% 45%, transparent 45%, rgba(2, 15, 38, 0.7) 100%);
+}
+.v-film__cap {
+  margin: 18px 0 0;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.72);
 }
 .v-video {
   position: relative;
@@ -301,7 +331,12 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
   background: var(--abyss);
-  box-shadow: 0 50px 100px -50px rgba(0, 0, 0, 0.7);
+  outline: 1px solid rgba(255, 255, 255, 0.24);
+  outline-offset: -1px;
+  box-shadow:
+    0 0 0 8px rgba(255, 255, 255, 0.06),
+    0 0 110px -18px rgba(234, 138, 16, 0.55),
+    0 60px 120px -40px rgba(0, 0, 0, 0.85);
 }
 .v-video img,
 .v-video video {
@@ -310,54 +345,70 @@
   height: 100%;
   object-fit: cover;
 }
-.v-video::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(60% 60% at 50% 50%, rgba(2, 15, 38, 0.1), rgba(2, 15, 38, 0.45));
-  pointer-events: none;
-  transition: opacity 0.4s;
-}
-.v-video.is-playing::after {
-  opacity: 0;
-}
+/* play: botão laranja grande com anel pulsando. A capa (capa-video-*) deixa o lugar dele livre:
+   embaixo da frase no computador, no pé da imagem no celular */
 .v-video__play {
   position: absolute;
   z-index: 1;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  left: 5.7%;
+  top: 60%;
   display: inline-flex;
   align-items: center;
-  gap: 14px;
-  padding: 10px 26px 10px 10px;
+  gap: 16px;
+  padding: 12px 30px 12px 12px;
   border: 0;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.94);
-  color: var(--ink);
-  font: 700 1rem/1 var(--font-sans);
+  background: var(--orange);
+  color: var(--ink); /* como o .btn--orange: branco no laranja dá 2,6:1 e o PageSpeed reprova */
+  font: 800 1.15rem/1 var(--font-sans);
+  white-space: nowrap;
   cursor: pointer;
-  box-shadow: 0 20px 50px -20px rgba(0, 0, 0, 0.6);
-  transition: transform 0.5s var(--ease);
+  box-shadow: 0 24px 50px -16px rgba(234, 138, 16, 0.7), 0 0 0 6px rgba(234, 138, 16, 0.22);
+  transition: transform 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 .v-video__play:hover {
-  transform: translate(-50%, -50%) scale(1.05);
+  transform: scale(1.05);
+  box-shadow: 0 30px 60px -16px rgba(234, 138, 16, 0.8), 0 0 0 10px rgba(234, 138, 16, 0.25);
 }
 .v-video__play span {
   position: relative;
-  width: 52px;
-  height: 52px;
+  width: 60px;
+  height: 60px;
   border-radius: 50%;
-  background: var(--orange);
+  background: #fff;
 }
 .v-video__play span::after {
   content: "";
   position: absolute;
-  left: 21px;
-  top: 16px;
+  left: 24px;
+  top: 19px;
   border-style: solid;
-  border-width: 10px 0 10px 16px;
-  border-color: transparent transparent transparent var(--ink);
+  border-width: 11px 0 11px 18px;
+  border-color: transparent transparent transparent var(--orange);
+}
+.v-video__play span::before {
+  content: "";
+  position: absolute;
+  inset: -7px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  border-radius: 50%;
+  animation: v-pulso 2.2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+@keyframes v-pulso {
+  from {
+    transform: scale(0.85);
+    opacity: 0.9;
+  }
+  to {
+    transform: scale(1.55);
+    opacity: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .v-video__play span::before {
+    animation: none;
+    opacity: 0;
+  }
 }
 
 /* ==========================================================================
@@ -621,12 +672,10 @@
 .v-founder .marquee__track .serif {
   font-weight: 400;
 }
-.v-places {
-  margin: 0;
-  padding-top: 22px;
+/* fim da seção: a faixa de parques fecha a seção antes da onda (no padding da seção: margem no
+   último filho vazaria para fora dela) */
+.page-lp .v-founder {
   padding-bottom: clamp(110px, 13vw, 180px);
-  font-size: 0.9rem;
-  color: var(--ink-2);
 }
 
 /* ==========================================================================
@@ -1382,21 +1431,16 @@
     justify-content: flex-start;
   }
 }
-/* vídeo no celular: o botão fica embaixo, longe do texto da capa */
+/* vídeo no celular: o botão fica no pé da capa, embaixo dos cartões de resultado */
 @media (max-width: 699px) {
   .v-video__play {
+    left: 50%;
     top: auto;
-    bottom: 9%;
+    bottom: 6%;
     transform: translateX(-50%);
   }
   .v-video__play:hover {
     transform: translateX(-50%) scale(1.05);
-  }
-}
-/* capa do vídeo = a abertura ("Título não se vende sozinho."): no computador o botão fica à direita do texto */
-@media (min-width: 700px) {
-  .v-video__play {
-    left: 72%;
   }
 }
 @media (max-width: 560px) {
@@ -1417,9 +1461,6 @@
   .v-career li {
     grid-template-columns: minmax(0, 1fr);
   }
-}
-.v-video__play {
-  white-space: nowrap;
 }
 
 /* ==========================================================================
@@ -1448,6 +1489,94 @@
 .v-hero__lead b {
   color: #fff;
 }
+/* os parques por trás dos números: o Palmeiras alto à esquerda, Raposa e Ouro Verde empilhados à direita
+   (mosaico desigual de propósito: três cartões iguais lado a lado ficam com cara de modelo pronto) */
+.v-parks {
+  display: grid;
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  grid-template-rows: auto 1fr 1fr;
+  gap: clamp(12px, 1.4vw, 18px);
+  height: clamp(560px, 50vw, 720px);
+  margin-top: clamp(56px, 7vw, 96px);
+}
+.v-parks__title {
+  grid-column: 1 / -1;
+  margin: 0 0 clamp(6px, 1vw, 12px);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.5rem, 2.4vw, 2.1rem);
+  line-height: 1.1;
+}
+.v-park {
+  position: relative;
+  min-height: 0;
+  margin: 0;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--navy);
+}
+.v-park--tall {
+  grid-row: 2 / 4;
+}
+.v-park img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s var(--ease);
+}
+.v-park:hover img {
+  transform: scale(1.04);
+}
+.v-park::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(2, 15, 38, 0) 45%, rgba(2, 15, 38, 0.82) 100%);
+  pointer-events: none;
+}
+.v-park figcaption {
+  position: absolute;
+  z-index: 1;
+  left: clamp(16px, 2vw, 26px);
+  right: clamp(16px, 2vw, 26px);
+  bottom: clamp(14px, 1.8vw, 22px);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  color: #fff;
+}
+.v-park figcaption b {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.1rem, 1.6vw, 1.45rem);
+  line-height: 1.1;
+}
+.v-park figcaption span {
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: var(--orange);
+  font-weight: 800;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+@media (max-width: 699px) {
+  .v-parks {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: none;
+    height: auto;
+  }
+  .v-park,
+  .v-park--tall {
+    grid-row: auto;
+    aspect-ratio: 16 / 11;
+  }
+  .v-park--tall img {
+    object-position: 50% 62%;
+  }
+}
+
 /* chamada depois do placar */
 .v-proof__cta {
   display: flex;
@@ -1502,8 +1631,33 @@
     font-size: 1rem;
     line-height: 1.55;
   }
-  .v-hero .v-hero__art {
+  /* revisão 30/10: o botão principal subiu para antes da foto (embaixo dela ficava fora da 1ª tela em
+     todos os celulares). O parágrafo fica só com o "como"; o Raposa aparece no vídeo e nos resultados */
+  .v-hero__lead-prova {
+    display: none;
+  }
+  .v-hero .v-actions {
+    display: contents;
+  }
+  .v-hero .v-actions .btn {
+    flex: none; /* fora do .v-actions o "flex: 1 1 100%" do celular esticava/encolhia a altura */
+  }
+  .v-hero .v-actions .btn--orange {
     order: 4;
+    align-self: center;
+    margin: 20px var(--gutter) 0;
+    min-width: min(100% - 2 * var(--gutter), 320px);
+  }
+  .v-hero .v-actions .btn--glass {
+    order: 6;
+    position: relative;
+    z-index: 2;
+    align-self: center;
+    margin: -64px var(--gutter) 0;
+    min-width: min(100% - 2 * var(--gutter), 320px);
+  }
+  .v-hero .v-hero__art {
+    order: 5;
     margin: 4px 0 0;
     width: 100%;
     aspect-ratio: 4 / 5;
@@ -1519,21 +1673,109 @@
   .v-hero__cap {
     bottom: 26%;
   }
-  .v-hero .v-actions {
-    order: 5;
-    position: relative;
-    z-index: 2;
-    margin-top: -64px;
-    justify-content: center;
-  }
   .v-hero__micro {
-    order: 6;
+    order: 7;
   }
   .v-hero__proof {
-    order: 7;
+    order: 8;
     margin-bottom: 72px;
   }
 }
 .v-nowrap {
   white-space: nowrap;
+}
+
+/* ==========================================================================
+   revisão do celular (30/10): menu com botão de destaque, menos vão entre as seções, placar compacto,
+   toques de 44 px no rodapé e o botão do WhatsApp some em cima do formulário (venda.js)
+   ========================================================================== */
+.menu__foot {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 20px;
+}
+.menu__cta {
+  justify-content: center;
+}
+.wa-fab,
+.wa-tip {
+  transition: opacity 0.35s, visibility 0s 0s;
+}
+.lp-sem-fab .wa-fab,
+.lp-sem-fab .wa-tip {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.35s, visibility 0s 0.35s;
+}
+@media (max-width: 699px) {
+  .page-lp .v-sec {
+    padding-top: 76px;
+    padding-bottom: 76px;
+  }
+  /* vídeo e resultados são os dois azuis: sem o vão duplo entre eles */
+  .page-lp .v-film {
+    padding-bottom: 36px;
+  }
+  .page-lp .v-proof {
+    padding-top: 52px;
+  }
+  .page-lp .v-lead {
+    padding-bottom: 56px;
+  }
+  .v-founder .marquee {
+    margin-top: 64px;
+  }
+  .page-lp .v-founder {
+    padding-bottom: 88px;
+  }
+  /* dores: as que não estão no meio da tela ficam legíveis (antes sumiam) */
+  .v-pain__list.is-live .v-pain__item:not(.is-on) {
+    opacity: 0.45;
+  }
+  /* placar: contratos, prazo e captado lado a lado; o tipo de campanha vira etiqueta; o ritmo numa linha */
+  .v-score tr {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 0.75fr) minmax(0, 1.25fr);
+    gap: 10px 14px;
+    padding: 20px 0;
+  }
+  .v-score td {
+    white-space: nowrap;
+  }
+  /* total: o captado ocupa as duas últimas colunas ("R$ 5,5 milhões" quebrava em duas linhas) */
+  .v-score tfoot td:nth-of-type(4) {
+    grid-column: span 2;
+  }
+  .v-score tbody td:nth-of-type(1) {
+    grid-column: 1 / -1;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+  .v-score tbody td:nth-of-type(1)::before {
+    display: none;
+  }
+  .v-score td:last-child {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .v-score td:last-child::before {
+    display: none;
+  }
+  .v-score td:last-child .v-bar {
+    flex: 1;
+  }
+  .v-score__rate {
+    white-space: nowrap;
+  }
+  /* rodapé: cada link com área de toque de 44 px */
+  .page-lp .footer__col a,
+  .v-foot-links a {
+    display: inline-block;
+    padding: 10px 0;
+  }
 }
