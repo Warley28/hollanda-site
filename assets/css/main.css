@@ -1570,6 +1570,13 @@ html:not(.js) .loader,
   border-color: rgba(234, 138, 16, 0.4);
   justify-content: space-between;
 }
+/* cartão final dos serviços: botão de contato e o link do método */
+.service__actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 18px;
+}
 .service__quote {
   font-size: clamp(1.7rem, 2.3vw, 2.3rem);
   line-height: 1.08;
@@ -2310,6 +2317,18 @@ html:not(.js) .loader,
   text-transform: uppercase;
   opacity: 0.75;
 }
+/* celular: nome em cima e resultado embaixo em todas as linhas (sem quebra diferente em cada uma) */
+@media (max-aspect-ratio: 1/1) {
+  .et-num__list .et-w {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.2em;
+  }
+  /* 6 empreendimentos: linhas mais juntas para caber em telas baixas */
+  .et-num__list li {
+    padding: calc(var(--u) * 0.7) 0;
+  }
+}
 
 /* assinatura */
 .et-sign {
@@ -2511,6 +2530,12 @@ html:not(.js) .loader,
     width: calc(var(--u) * 36);
   }
 }
+/* (depois do bloco de celular acima, que define o tamanho padrão) celular baixo (até ~600px de altura útil): o número encolhe para a lista inteira caber */
+@media (max-aspect-ratio: 1/1) and (max-height: 600px) {
+  .et-num__big {
+    font-size: calc(var(--u) * 24);
+  }
+}
 
 /* modo render (?render=etapas): só a composição, em tela cheia */
 html.et-render,
@@ -2542,6 +2567,11 @@ html.et-render body {
 }
 .faq__grid .h2 {
   margin-top: 22px;
+}
+.faq__more {
+  margin: 22px 0 22px;
+  max-width: 32ch;
+  color: var(--ink-2);
 }
 .faq__item {
   border-bottom: 1px solid var(--line-l);
@@ -2603,7 +2633,7 @@ html.et-render body {
   border-top: 1px solid var(--line-l);
 }
 
-/* ---------- credibilidade (rascunho: só aparece com ?rascunho até chegarem os dados) ---------- */
+/* ---------- credibilidade (números confirmados; o que falta só aparece com ?rascunho) ---------- */
 .proof {
   background: var(--deep);
   color: #fff;
@@ -2632,9 +2662,28 @@ html.et-render body {
 .proof__stats dt {
   font-family: var(--font-display);
   font-weight: 800;
-  font-size: clamp(2.6rem, 5vw, 4.4rem);
+  font-size: clamp(2.4rem, 4.2vw, 3.8rem);
   line-height: 1;
+  white-space: nowrap;
   color: var(--orange);
+}
+/* "R$" menor, encostado no número */
+.proof__stats dt small {
+  margin-right: 0.12em;
+  font-size: 0.48em;
+  font-weight: 700;
+  vertical-align: 0.62em;
+}
+.proof__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 28px;
+}
+.proof__note {
+  margin: 22px 0 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.56);
 }
 .proof__stats dd {
   margin: 10px 0 0;
@@ -4817,5 +4866,264 @@ html.wave-in::after {
   .wa-panel,
   .wa-q {
     transition: none;
+  }
+}
+
+/* ---------- formulário de contato que abre com a onda (assets/js/contato.js) ----------
+   A onda do site (.pt, a mesma da troca de página) sobe e cobre a tela; o <dialog> ocupa a tela toda,
+   transparente, com bolhas subindo, e o cartão claro nasce da água. Sem a onda (menos movimento), fundo
+   azul-marinho escurecido e o cartão aparece sem animação. */
+.ct-modal {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: max(16px, env(safe-area-inset-top)) 16px max(16px, env(safe-area-inset-bottom));
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  overflow: hidden;
+}
+.ct-modal[open] {
+  display: grid;
+  place-items: center;
+}
+.ct-modal::backdrop {
+  background: rgba(2, 15, 38, 0.86);
+}
+.ct-modal--agua::backdrop {
+  background: transparent;
+}
+/* bolhas subindo na água, atrás do cartão */
+.ct-modal--agua[open]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(circle, rgba(255, 255, 255, 0.2) 0 3px, transparent 4px),
+    radial-gradient(circle, rgba(255, 255, 255, 0.14) 0 2px, transparent 3px),
+    radial-gradient(circle, rgba(99, 212, 212, 0.2) 0 4px, transparent 5px);
+  background-size: 230px 270px, 170px 210px, 310px 350px;
+  animation: ctBolhas 12s linear infinite;
+  opacity: 0.9;
+}
+@keyframes ctBolhas {
+  from {
+    background-position: 40px 0, 120px 60px, 200px 30px;
+  }
+  to {
+    background-position: 60px -540px, 100px -570px, 230px -700px;
+  }
+}
+.ct-card {
+  position: relative;
+  width: min(560px, 100%);
+  max-height: calc(100% - 8px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: clamp(24px, 4vw, 40px);
+  border-radius: var(--radius-lg);
+  background: var(--paper);
+  box-shadow: 0 40px 90px rgba(2, 12, 30, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.06);
+}
+.ct-modal[open] .ct-card {
+  animation: ctSobe 0.9s var(--ease) both;
+}
+/* o cartão sobe da água e assenta, com um leve balanço */
+@keyframes ctSobe {
+  0% {
+    opacity: 0;
+    transform: translateY(70px) scale(0.96);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-6px) scale(1);
+  }
+  100% {
+    transform: none;
+  }
+}
+.ct-card:focus {
+  outline: none;
+}
+.ct-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(11, 26, 51, 0.06);
+  cursor: pointer;
+}
+.ct-close::before,
+.ct-close::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 16px;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--ink);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+.ct-close::after {
+  transform: translate(-50%, -50%) rotate(-45deg);
+}
+.ct-close:hover {
+  background: rgba(11, 26, 51, 0.12);
+}
+.ct-kicker {
+  margin: 0;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--orange-ink);
+}
+.ct-title {
+  margin: 10px 48px 0 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: clamp(1.7rem, 3.4vw, 2.3rem);
+  line-height: 1.05;
+}
+.ct-text {
+  margin: 12px 0 20px;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+.ct-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0 14px;
+}
+.ct-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 14px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+}
+.ct-field small {
+  font-weight: 500;
+  color: var(--muted);
+}
+.ct-field select,
+.ct-field input {
+  width: 100%;
+  padding: 13px 14px;
+  border: 1.5px solid var(--line-l);
+  border-radius: 14px;
+  background: #fff;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 500;
+  font-size: 16px; /* o iPhone não dá zoom ao tocar no campo */
+}
+.ct-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  padding-right: 40px;
+  background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%230b1a33' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right 14px center / 12px 8px;
+}
+.ct-field select:focus,
+.ct-field input:focus {
+  outline: none;
+  border-color: var(--orange);
+  box-shadow: 0 0 0 3px rgba(234, 138, 16, 0.2);
+}
+.ct-field input[aria-invalid="true"] {
+  border-color: #b3261e;
+}
+.ct-send {
+  width: 100%;
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: #25d366;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  font-size: 1.02rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+}
+.ct-send svg {
+  width: 20px;
+  height: 20px;
+}
+.ct-send:hover {
+  background: #1fbe5b;
+}
+.ct-send:active {
+  transform: scale(0.98);
+}
+.ct-close:focus-visible,
+.ct-send:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 2px;
+}
+.ct-err {
+  min-height: 1.2em;
+  margin: 8px 0 0;
+  font-size: 0.85rem;
+  color: #b3261e;
+}
+.ct-err:empty {
+  min-height: 0;
+  margin: 0;
+}
+.ct-lgpd {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  text-align: center;
+  color: var(--muted);
+}
+html.ct-aberto {
+  overflow: hidden;
+}
+@media (max-width: 560px) {
+  .ct-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ct-card {
+    padding: 22px 18px 18px;
+  }
+  .ct-title {
+    font-size: 1.55rem;
+  }
+  .ct-text {
+    margin: 8px 0 14px;
+    font-size: 0.92rem;
+  }
+  .ct-field {
+    gap: 4px;
+    margin-bottom: 10px;
+  }
+  .ct-field select,
+  .ct-field input {
+    padding: 11px 13px;
+  }
+  .ct-send {
+    padding: 14px 18px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ct-modal[open] .ct-card,
+  .ct-modal--agua[open]::before {
+    animation: none;
   }
 }
