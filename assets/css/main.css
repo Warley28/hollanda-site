@@ -2324,9 +2324,9 @@ html:not(.js) .loader,
     align-items: flex-start;
     gap: 0.2em;
   }
-  /* 6 empreendimentos: linhas mais juntas para caber em telas baixas */
+  /* 7 empreendimentos: linhas mais juntas para caber em telas baixas */
   .et-num__list li {
-    padding: calc(var(--u) * 0.7) 0;
+    padding: calc(var(--u) * 0.55) 0;
   }
 }
 
@@ -2518,7 +2518,7 @@ html:not(.js) .loader,
     padding: 0 calc(var(--u) * 4.5);
   }
   .et-num__big {
-    font-size: calc(var(--u) * 30);
+    font-size: calc(var(--u) * 26);
   }
   .et-num__side {
     width: 100%;
@@ -2533,7 +2533,7 @@ html:not(.js) .loader,
 /* (depois do bloco de celular acima, que define o tamanho padrão) celular baixo (até ~600px de altura útil): o número encolhe para a lista inteira caber */
 @media (max-aspect-ratio: 1/1) and (max-height: 600px) {
   .et-num__big {
-    font-size: calc(var(--u) * 24);
+    font-size: calc(var(--u) * 20);
   }
 }
 
